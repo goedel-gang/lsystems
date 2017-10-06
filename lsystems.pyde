@@ -1,10 +1,12 @@
 from hilbert import draw_hil
 from dragon import draw_drg
 from levy import draw_lev
+from koch import draw_koc
 
 FUNS = [(draw_hil, {"depth": 9}),
         (draw_drg, {"depth": 18}),
-        (draw_lev, {"depth": 18})]
+        (draw_lev, {"depth": 18}),
+        (draw_koc, {"depth": 8}),]
 
 PER_FRAME = 100
 CFUN = 0
