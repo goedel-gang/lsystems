@@ -1,6 +1,7 @@
 # vim: ft=python
 
-from fractals import FRACTAL_REGISTRY, draw_fractal
+from fractals import FRACTAL_REGISTRY
+from drawing import draw_fractal
 
 PER_FRAME = 1000
 
@@ -10,7 +11,7 @@ def setup():
     background(0)
     colorMode(HSB, 255, 255, 255)
     noFill()
-    cur_fractal = draw_fractal(FRACTAL_REGISTRY[0])
+    cur_fractal = draw_fractal(FRACTAL_REGISTRY[0], width)
     print("Available fractals:")
     print("\n".join(
         "{}: {}".format(ind, i.name)
@@ -25,9 +26,11 @@ def draw():
     except StopIteration:
         pass
 
+# TODO: further viewing modes
+
 def keyPressed():
     global cur_fractal
     n = keyCode - ord('1')
     if 0 <= n < len(FRACTAL_REGISTRY):
         background(0)
-        cur_fractal = draw_fractal(FRACTAL_REGISTRY[n])
+        cur_fractal = draw_fractal(FRACTAL_REGISTRY[n], width)
