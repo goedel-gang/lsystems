@@ -2,7 +2,7 @@
 
 from fractals import FRACTAL_REGISTRY, draw_fractal
 
-PER_FRAME = 100
+PER_FRAME = 1000
 
 def setup():
     global cur_fractal
