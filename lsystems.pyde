@@ -1,34 +1,33 @@
-from hilbert import draw_hil
-from dragon import draw_drg
-from levy import draw_lev
-from koch import draw_koc
+# vim: ft=python
 
-FUNS = [(draw_hil, {"depth": 9}),
-        (draw_drg, {"depth": 18}),
-        (draw_lev, {"depth": 18}),
-        (draw_koc, {"depth": 8}),]
+from fractals import FRACTAL_REGISTRY, draw_fractal
 
 PER_FRAME = 100
-CFUN = 0
 
 def setup():
-    global fun, FUNS
+    global cur_fractal
     size(1000, 1000)
     background(0)
     colorMode(HSB, 255, 255, 255)
-    f, a = FUNS[CFUN]
-    fun = f(width=height, **a)
+    noFill()
+    cur_fractal = draw_fractal(FRACTAL_REGISTRY[0])
+    print("Available fractals:")
+    print("\n".join(
+        "{}: {}".format(ind, i.name)
+        for ind, i in enumerate(FRACTAL_REGISTRY, 1)))
 
 def draw():
+    translate(width * 0.1, height * 0.1)
+    scale(0.8, 0.8)
     try:
         for _ in xrange(PER_FRAME):
-            next(fun)
+            next(cur_fractal)
     except StopIteration:
         pass
 
 def keyPressed():
-    global CFUN
+    global cur_fractal
     n = keyCode - ord('1')
-    if 0 <= n < len(FUNS):
-        CFUN = n
-        setup()
+    if 0 <= n < len(FRACTAL_REGISTRY):
+        background(0)
+        cur_fractal = draw_fractal(FRACTAL_REGISTRY[n])
