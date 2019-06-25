@@ -83,7 +83,7 @@ dragon = LSystemFractal(
                      "-": lambda: t.turn_degrees(+90),
                      "+": lambda: t.turn_degrees(-90),
                      "0": lambda: (t.turn_degrees(45 + 45 * d),
-                                   t.jump(w * 0.35, height * 0.25)),
+                                   t.jump(w * 0.35, w * 0.25)),
                      "X": nop,
                      "Y": nop},
     15)
@@ -192,7 +192,7 @@ levy_c = LSystemFractal(
     lambda t, d, w: {"F": lambda: t.forward(w * 0.5 * 2 ** -(d / 2)),
                      "-": lambda: t.turn_degrees(-45),
                      "+": lambda: t.turn_degrees(+45),
-                     "0": lambda: t.jump(0.25 * w, 0.25 * height)},
+                     "0": lambda: t.jump(0.25 * w, 0.25 * w)},
     14)
 
 hilbert = LSystemFractal(
@@ -235,10 +235,11 @@ koch = LSystemFractal(
 
 koch_square = LSystemFractal(
     "Square Koch Curve",
-    "F",
-    lambda d: 5 ** d,
+    "0F--F",
+    lambda d: 2 * 5 ** d,
     {"F": "F+F-F-F+F"},
     lambda t, d, w: {"F": lambda: t.forward(w * 3 ** -d),
                      "-": lambda: t.turn_degrees(-90),
-                     "+": lambda: t.turn_degrees(+90)},
+                     "+": lambda: t.turn_degrees(+90),
+                     "0": lambda: t.jump(0, 0.5 * w)},
     7)

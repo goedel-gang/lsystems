@@ -5,11 +5,11 @@ with a couple implemented. Due to the use of generators they also generate
 gradually, giving a nice "drawing" effect, rather than blocking for several
 frames. Here are a few:
 
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/win_screenshot_20190624_223731.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/win_screenshot_20190624_223733.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/win_screenshot_20190624_223737.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/win_screenshot_20190624_223739.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/win_screenshot_20190624_223741.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/win_screenshot_20190624_223746.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/win_screenshot_20190624_223748.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/win_screenshot_20190624_223750.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/sierpinski.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/sierp_hex.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/levyC.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/koch_snowflake.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/hilbert.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/fern.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/dragon.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/koch_square.png)

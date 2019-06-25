@@ -11,7 +11,8 @@ class ProcessingTurtle:
     A little turtle class to execute the actual drawing of an L-system. Mostly
     pretty self-explanatory. No error checking done.
     """
-    def __init__(self, x=0, y=0, heading=0, pendown=True):
+    def __init__(self, graphics, x=0, y=0, heading=0, pendown=True):
+        self.graphics = graphics
         self.x = x
         self.y = y
         self.heading = heading
@@ -21,7 +22,7 @@ class ProcessingTurtle:
 
     def setpos(self, nx, ny):
         if self._pendown:
-            line(self.x, self.y, nx, ny)
+            self.graphics.line(self.x, self.y, nx, ny)
         self.jump(nx, ny)
 
     def jump(self, nx, ny):
@@ -53,19 +54,19 @@ class ProcessingTurtle:
     def restore_state(self):
         self.x, self.y, self.heading, self._pendown = self.state_stack.pop()
 
-def draw_fractal(fractal, w):
+def draw_fractal(graphics, fractal, w):
     """
     Draw an LSystemFractal, by repeatedly applying its own rewrite rules, in a
     stack of lazy generators, and then using its drawing rules.
     """
-    t = ProcessingTurtle(0, 0, 0)
-    background(0)
+    t = ProcessingTurtle(graphics, 0, 0, 0)
+    graphics.background(0)
     path = fractal.start
     expected_steps = fractal.size_func(fractal.iterations)
     draw_rules = fractal.draw_rules(t, fractal.iterations, w)
     for _ in xrange(fractal.iterations):
         path = substitute(path, fractal.rules)
     for symbol in path:
-        stroke(255.0 * t.times_moved / expected_steps, 255, 255)
+        graphics.stroke(255.0 * t.times_moved / expected_steps, 255, 255)
         draw_rules[symbol]()
         yield
