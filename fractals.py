@@ -1,18 +1,18 @@
 """
-Using Python turtle to draw L-system fractals
-It uses layered lazy generators so it is very memory-efficient - effectively
-using a call-stack of the size of the number of iterations. See [1].
+Abstract classes and instances to draw L-system fractals.
+See [1], and the various other wikipedia pages on fractals.
 
 [1]: https://en.wikipedia.org/wiki/L-system
 """
 
 from collections import namedtuple
+from itertools import chain
 
 from matrix import Matrix
 
-LSystemFractalTuple = namedtuple("LSystemFractalTuple",
-                                 """name start size_func rules draw_rules
-                                    iterations""")
+LSystemFractalTuple = namedtuple(
+        "LSystemFractalTuple",
+        "name start steps_func size_func rules draw_rules iterations")
 
 FRACTAL_REGISTRY = []
 
@@ -21,15 +21,20 @@ class LSystemFractal(LSystemFractalTuple):
     Class representing an L-system fractal. This is a thin wrapper around the
     namedtuple that stores the fields, but additionally, this automatically
     registers any new fractals in the FRACTAL_REGISTRY. Fractals should expect
-    to be drawn in a square box with one corner at (0, 0), and the other corner
-    accessible as a parameter to the appropriate functions.
+    to be drawn in a square box with side length 1 and one corner at (0, 0).
     The initial drawing state will be a turtle at (0, 0) facing in the direction
     of the x-axis. This can be modified by prefixing the initial string with a
     dummy "0" symbol, and using that symbol to perform setup. To execute
     multiple lines of setup in a single line, you can use a tuple.
+    The turtle's forward() method should be scaled so that if you use forward(1)
+    for each accounted drawing step, it will fit in the square. The setpos() and
+    jump() methods take inputs in [0, 1]^2 though.
     Properties:
     start:      initial string
     size_func:  A function taking an integer (the number of iterations) and
+                returning the expected largest dimension of the fractal (height
+                or width), given in unit drawing steps.
+    steps_func: A function taking an integer (the number of iterations) and
                 returning the expected number of steps to take. This is needed
                 for colouring.
     rules:      The rules for rewriting at each iteration, as a mapping object.
@@ -66,28 +71,31 @@ sierpinski = LSystemFractal(
     "Sierpinski's Gasket",
     "F-G-G",
     lambda d: 3 ** d * 3,
+    lambda d: 2 ** d,
     {"F": "F-G+F+G-F",
      "G": "GG"},
-    lambda t, d, w: {"F": lambda: t.forward(w * 2 ** -d),
-                     "G": lambda: t.forward(w * 2 ** -d),
-                     "-": lambda: t.turn_degrees(+120),
-                     "+": lambda: t.turn_degrees(-120)},
-    9)
+    lambda t, d: {"F": lambda: t.forward(1),
+                  "G": lambda: t.forward(1),
+                  "-": lambda: t.turn_degrees(+120),
+                  "+": lambda: t.turn_degrees(-120)},
+    10)
 
 dragon = LSystemFractal(
     "The Dragon Curve",
     "0FX",
     lambda d: 2 ** d,
+    # TODO: basically no idea about dragon dimensions, this is all guesswork.
+    lambda d: 2 * 2 ** (d / 2.0),
     {"X": "X+YF+",
      "Y": "-FX-Y"},
-    lambda t, d, w: {"F": lambda: t.forward(w * 0.5 * 2 ** -(d / 2)),
-                     "-": lambda: t.turn_degrees(+90),
-                     "+": lambda: t.turn_degrees(-90),
-                     "0": lambda: (t.turn_degrees(45 + 45 * d),
-                                   t.jump(w * 0.35, w * 0.25)),
-                     "X": nop,
-                     "Y": nop},
-    15)
+    lambda t, d: {"F": lambda: t.forward(1),
+                  "-": lambda: t.turn_degrees(+90),
+                  "+": lambda: t.turn_degrees(-90),
+                  "0": lambda: (t.turn_degrees(45 + 45 * d),
+                                t.jump(0.35, 0.25)),
+                  "X": nop,
+                  "Y": nop},
+    16)
 
 def fern_steps(depth):
     r"""
@@ -112,8 +120,16 @@ def fern_steps(depth):
     So then
     M_n = T ^ n M_0, and we can extract the value of F_n.
 
-    Of course this could be inlined but then I would have to sacrifice this
-    beautiful docstring.
+    It's probably possible to actually solve this recurrence to give a totally
+    closed form for F_n, but
+    1) I'm not clever enough
+    2) This would still involve powers, so would not be asymptotically more
+       efficient
+    TODO: this is fairly doable. Just diagonalise T, basically. Not sure if
+          better done by hand or by program..
+
+    Of course this whole function could be inlined but then I would have to
+    sacrifice this beautiful docstring.
     """
     return (Matrix([[3, 2], [0, 4]]) ** depth * Matrix([[0], [1]])).array[0][0]
 
@@ -121,75 +137,103 @@ fern = LSystemFractal(
     "A Lindenmayer Fern",
     "0X",
     fern_steps,
+    # TODO: better approach to this
+    lambda d: 0.1 * 3 ** d,
     {"X": "F+[[X]-X]-F[-FX]+X",
      "F": "FF"},
-    # TODO: better approach to this
-    lambda t, d, w: {"F": lambda: t.forward(w * 10 * 3 ** -(d)),
-                     "-": lambda: t.turn_degrees(+25),
-                     "+": lambda: t.turn_degrees(-25),
-                     "X": nop,
-                     "[": t.save_state,
-                     "]": t.restore_state,
-                     "0": lambda: (t.jump(w / 2, 0),
-                                   t.setheading_degrees(90))},
+    lambda t, d: {"F": lambda: t.forward(1),
+                  "-": lambda: t.turn_degrees(+25),
+                  "+": lambda: t.turn_degrees(-25),
+                  "X": nop,
+                  "[": t.save_state,
+                  "]": t.restore_state,
+                  "0": lambda: (t.jump(0.5, 0),
+                                t.setheading_degrees(90))},
     8)
 
 levy_c = LSystemFractal(
     "The Levy C Curve",
     "0F",
     lambda d: 2 ** d,
+    lambda d: 2 * 2 ** (d / 2.0),
     {"F": "+F--F+"},
-    lambda t, d, w: {"F": lambda: t.forward(w * 0.5 * 2 ** -(d / 2)),
-                     "-": lambda: t.turn_degrees(-45),
-                     "+": lambda: t.turn_degrees(+45),
-                     "0": lambda: t.jump(0.25 * w, 0.25 * w)},
-    14)
+    lambda t, d: {"F": lambda: t.forward(1),
+                  "-": lambda: t.turn_degrees(-45),
+                  "+": lambda: t.turn_degrees(+45),
+                  "0": lambda: t.jump(0.25, 0.25)},
+    18)
 
 hilbert = LSystemFractal(
     "Hilbert's Space-Filling Curve",
     "A",
     lambda d: 4 ** d,
+    lambda d: 2 ** d,
     {"A": "-BF+AFA+FB-",
      "B": "+AF-BFB-FA+"},
-    lambda t, d, w: {"F": lambda: t.forward(w * 2 ** -(d)),
-                     "A": nop,
-                     "B": nop,
-                     "-": lambda: t.turn_degrees(+90),
-                     "+": lambda: t.turn_degrees(-90)},
+    lambda t, d: {"F": lambda: t.forward(1),
+                  "A": nop,
+                  "B": nop,
+                  "-": lambda: t.turn_degrees(+90),
+                  "+": lambda: t.turn_degrees(-90)},
     8)
 
 sierp_hex = LSystemFractal(
     "Sierpinski's Gasket Hexagonal Variant",
     "A",
     lambda d: 3 ** d,
+    lambda d: 2 ** d,
     {"A": "B-A-B",
      "B": "A+B+A"},
-    lambda t, d, w: {"A": lambda: t.forward(w * 2 ** -d),
-                     "B": lambda: t.forward(w * 2 ** -d),
-                     "-": lambda: t.turn_degrees(+60),
-                     "+": lambda: t.turn_degrees(-60)},
-    9)
+    lambda t, d: {"A": lambda: t.forward(1),
+                  "B": lambda: t.forward(1),
+                  "-": lambda: t.turn_degrees(-60 * (-1) ** d),
+                  "+": lambda: t.turn_degrees(60 * (-1) ** d)},
+    8)
 
 koch = LSystemFractal(
     "Koch Snowflake",
     "0F--F--F",
     lambda d: 3 * 4 ** d,
+    lambda d: 2 * sqrt(3) / 3 * 3 ** d,
     {"F": "F+F--F+F"},
-    lambda t, d, w: {"F": lambda: t.forward(3 / (2 * sqrt(3))
-                                          * w * 3 ** -d),
-                     "-": lambda: t.turn_degrees(60),
-                     "+": lambda: t.turn_degrees(-60),
-                     "0": lambda: t.jump(0.5 * (1 - 3 / (2 * sqrt(3))) * w,
-                                         0.25 * w)},
-    7)
+    lambda t, d: {"F": lambda: t.forward(1),
+                  "-": lambda: t.turn_degrees(60),
+                  "+": lambda: t.turn_degrees(-60),
+                  "0": lambda: t.jump(0.5 * (1 - 3 / (2 * sqrt(3))), 0.25)},
+    8)
 
 koch_square = LSystemFractal(
     "Square Koch Curve",
     "0F--F",
     lambda d: 2 * 5 ** d,
+    lambda d: 3 ** d,
     {"F": "F+F-F-F+F"},
-    lambda t, d, w: {"F": lambda: t.forward(w * 3 ** -d),
-                     "-": lambda: t.turn_degrees(-90),
-                     "+": lambda: t.turn_degrees(+90),
-                     "0": lambda: t.jump(0, 0.5 * w)},
+    lambda t, d: {"F": lambda: t.forward(1),
+                  "-": lambda: t.turn_degrees(-90),
+                  "+": lambda: t.turn_degrees(+90),
+                  "0": lambda: t.jump(0, 0.5)},
     7)
+
+# TODO: ParametrisedLSystemFractal
+binary_tree = LSystemFractal(
+    "Binary Tree",
+    "_0",
+    # see the Lindenmayer fern's documentation
+    lambda d: sum(chain(*(Matrix([[2, 0], [1, 2]]) ** d
+                        * Matrix([[1], [0]])).array)),
+    # A messy, but not intrinsically hugely complicated pair of interlaced
+    # geometric progressions
+    # TODO: scale with depth, rather than assume infinity. Remember leaves are
+    #       weird
+    lambda d: 2 ** (d - 1) * 4 / 3 * (1 + 0.25 * sqrt(2)),
+    {"1": "11",
+     "0": "1[0]0"},
+    lambda t, d: {"0": lambda: t.forward(1),
+                  "1": lambda: t.forward(1),
+                  "[": lambda: (t.save_state(),
+                                t.turn_degrees(45)),
+                  "]": lambda: (t.restore_state(),
+                                t.turn_degrees(-45)),
+                  "_": lambda: (t.jump(0.5, 0),
+                                t.setheading_degrees(90))},
+    10)

@@ -17,7 +17,7 @@ def intersperse_it(_it, int_it):
             yield int_i
         yield i
 
-class Matrix:
+class Matrix(object):
     """
     Very bare bones matrix class, doing just enough for debugging and the
     fern_steps function. This provides a nice asymptotically fast way to
@@ -96,7 +96,7 @@ class Matrix:
                                          rdelim)
                 for row, (ldelim, rdelim) in
                     intersperse_it(izip(self.array, delims),
-                                (([""] * len(self.array[0]), "||"),) * n))
+                                   (([""] * len(self.array[0]), "||"),) * n))
 
 
     def __str__(self):

@@ -2,3 +2,5 @@
 *.py[co]
 *.pyc
 __pycache__/**
+
+frames/
