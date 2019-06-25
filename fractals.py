@@ -7,7 +7,8 @@ using a call-stack of the size of the number of iterations. See [1].
 """
 
 from collections import namedtuple
-from operator import mul
+
+from matrix import Matrix
 
 LSystemFractalTuple = namedtuple("LSystemFractalTuple",
                                  """name start size_func rules draw_rules
@@ -87,57 +88,6 @@ dragon = LSystemFractal(
                      "X": nop,
                      "Y": nop},
     15)
-
-class Matrix:
-    """
-    Very bare bones matrix class, doing just enough for debugging and the
-    fern_steps function. This provides a nice asymptotically fast way to
-    calculate the outcome of a bunch of linear transitions, which is useful in
-    projecting the number of lines you will have to draw in an L-system.
-    Realistically, it won't occur any overhead to simply compute it by brute
-    force in linear time, and this is mostly just here for fun.
-
-    Gotcha: it doesn't necessarily perform copying when raising to a power of 1.
-
-    Doesn't perform any error checking.
-    """
-    def __init__(self, values):
-        self.array = values
-
-    def __mul__(self, other):
-        """
-        Matrix multiplication
-        """
-        return Matrix([[sum(map(mul, row, col))
-                        for col in zip(*other.array)]
-                        for row in self.array])
-
-    @classmethod
-    def identity(cls, n):
-        """
-        Get an n by n identity matrix
-        """
-        return cls([[int(x == y) for x in xrange(n)] for y in xrange(n)])
-
-    def __pow__(self, n):
-        """
-        Logarithmic (in the exponent) time exponentiation, using "Exponentiation
-        by Squaring". This is a divide and conquer strategy capitalising on the
-        fact that M ^ (2n + 1) == M ^ n M ^ n M, and
-                  M ^ 2n       == M ^ n M ^ n.
-        """
-        if n == 0:
-            return self.identity(len(self.array))
-        if n == 1:
-            return self
-        square = self ** (n // 2)
-        if n & 1:
-            return self * square * square
-        return square * square
-
-    def __str__(self):
-        return "\n".join("[{}]".format(" ".join("{:3}".format(i) for i in row))
-                for row in self.array)
 
 def fern_steps(depth):
     r"""
