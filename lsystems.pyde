@@ -7,10 +7,18 @@ incurring a significant slowdown, and I'm already slow enough because I'm using
 Python.
 """
 
+# Record each frame, and set other values to be suitable for video recording
 VIDEO = True
-# don't actually save any frames
+# Don't actually save any frames, but still set video default graphics options
 VIDEO_MOCK = False
+
+# When automatically cycling, pause for this many frames
 CYCLE_PAUSE = 300
+
+# draw some lines to work out where the centre is. Turns out I don't have the
+# requisite IQ and understanding of geometry to reliably see if things are
+# centred right.
+GUIDELINES = False
 
 from collections import deque
 from itertools import islice
@@ -19,7 +27,8 @@ from fractals import FRACTAL_REGISTRY
 from drawing import draw_fractal
 
 def setup():
-    global render_to_buffer, render_fullscreen, cycle, cycling, depth_delta, frames_per_draw
+    global render_to_buffer, render_fullscreen, cycle, cycling, depth_delta, \
+           frames_per_draw
     size(1920 if VIDEO else 1000, 1080 if VIDEO else 1000)
     cycling = -1
     depth_delta = 0
@@ -80,6 +89,9 @@ def advance():
 
 def draw():
     global cur_fractal_n, cycling
+    if GUIDELINES:
+        line(0, 0, width, height)
+        line(0, height, width, 0)
     translate(width / 2 - height / 2, 0)
     if cycle and cycling != -1:
         cycling -= 1
@@ -96,7 +108,8 @@ def draw():
         translate(0, height)
         scale(1, -1)
         if not render_fullscreen:
-            translate(width * 0.1, height * 0.1)
+            # Assume height is less than width
+            translate(height * 0.1, height * 0.1)
             scale(0.8, 0.8)
         advance()
         if render_to_buffer:

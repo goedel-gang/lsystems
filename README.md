@@ -5,8 +5,8 @@ with a couple implemented. Due to the use of generators they also generate
 gradually, giving a nice "drawing" effect, rather than blocking for several
 frames.
 
-The version used to generate [this video](...) is at the
-[video tag](https://github.com/goedel-gang/lsystems/tree/video).
+The version used to generate [this video](https://youtu.be/lcpQZpO5YEc) is at
+the [video tag](https://github.com/goedel-gang/lsystems/tree/video).
 
 Here are some screenshots:
 
