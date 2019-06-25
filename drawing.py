@@ -96,5 +96,5 @@ def draw_fractal(graphics, fractal, w, depth):
         path = substitute(path, fractal.rules)
     for symbol in path:
         graphics.stroke(255.0 * t.times_moved / expected_steps, 255, 255)
-        draw_rules[symbol]()
-        yield
+        if draw_rules[symbol]():
+            yield

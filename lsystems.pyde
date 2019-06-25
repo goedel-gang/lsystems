@@ -7,7 +7,9 @@ incurring a significant slowdown, and I'm already slow enough because I'm using
 Python.
 """
 
-VIDEO = False
+VIDEO = True
+# don't actually save any frames
+VIDEO_MOCK = False
 CYCLE_PAUSE = 300
 
 from collections import deque
@@ -100,7 +102,8 @@ def draw():
         if render_to_buffer:
             image(fractal_graphics, 0, 0)
     if VIDEO:
-        saveFrame("frames/lsystems-#############.png")
+        if not VIDEO_MOCK:
+            saveFrame("frames/lsystems-#############.png")
 
 def keyPressed():
     global iterations_per_frame, depth_delta

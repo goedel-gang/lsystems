@@ -43,7 +43,8 @@ class LSystemFractal(LSystemFractalTuple):
                 is a function of a turtle-like object, the depth of the fractal,
                 and the width of the square it should be drawn in, so the
                 fractal can make adjustments for itself and access drawing
-                methods.
+                methods. If a rule returns a truthy value when called, that is
+                taken to mean that it has constituted a step.
     iterations: The default number of iterations to perform.
     """
     def __init__(self, *args, **kwargs):
@@ -64,8 +65,20 @@ def substitute(sequence, rules):
             for sym in rules[symbol]:
                 yield sym
 
-def nop():
-    pass
+def draw(*args):
+    """
+    Dummy function that returns True, for nicer semantics in defining L systems.
+    You pass each thing you want to be executed as an argument. Generally I've
+    favoured lambda functions over functools.partial because I think they're
+    cooler.
+    """
+    return True
+
+def nodraw(*args):
+    """
+    Similar to draw(). With no arguments, can act as a no-op
+    """
+    return False
 
 sierpinski = LSystemFractal(
     "Sierpinski's Gasket",
@@ -74,10 +87,10 @@ sierpinski = LSystemFractal(
     lambda d: 2 ** d,
     {"F": "F-G+F+G-F",
      "G": "GG"},
-    lambda t, d: {"F": lambda: t.forward(1),
-                  "G": lambda: t.forward(1),
-                  "-": lambda: t.turn_degrees(+120),
-                  "+": lambda: t.turn_degrees(-120)},
+    lambda t, d: {"F": lambda: draw(t.forward(1)),
+                  "G": lambda: draw(t.forward(1)),
+                  "-": lambda: nodraw(t.turn_degrees(+120)),
+                  "+": lambda: nodraw(t.turn_degrees(-120))},
     10)
 
 dragon = LSystemFractal(
@@ -88,13 +101,13 @@ dragon = LSystemFractal(
     lambda d: 2 * 2 ** (d / 2.0),
     {"X": "X+YF+",
      "Y": "-FX-Y"},
-    lambda t, d: {"F": lambda: t.forward(1),
-                  "-": lambda: t.turn_degrees(+90),
-                  "+": lambda: t.turn_degrees(-90),
-                  "0": lambda: (t.turn_degrees(45 + 45 * d),
-                                t.jump(0.35, 0.25)),
-                  "X": nop,
-                  "Y": nop},
+    lambda t, d: {"F": lambda: draw(t.forward(1)),
+                  "-": lambda: nodraw(t.turn_degrees(+90)),
+                  "+": lambda: nodraw(t.turn_degrees(-90)),
+                  "0": lambda: nodraw(t.turn_degrees(45 + 45 * d),
+                                      t.jump(0.35, 0.25)),
+                  "X": nodraw,
+                  "Y": nodraw},
     16)
 
 def fern_steps(depth):
@@ -141,14 +154,14 @@ fern = LSystemFractal(
     lambda d: 0.1 * 3 ** d,
     {"X": "F+[[X]-X]-F[-FX]+X",
      "F": "FF"},
-    lambda t, d: {"F": lambda: t.forward(1),
-                  "-": lambda: t.turn_degrees(+25),
-                  "+": lambda: t.turn_degrees(-25),
-                  "X": nop,
+    lambda t, d: {"F": lambda: draw(t.forward(1)),
+                  "-": lambda: nodraw(t.turn_degrees(+25)),
+                  "+": lambda: nodraw(t.turn_degrees(-25)),
+                  "X": nodraw,
                   "[": t.save_state,
                   "]": t.restore_state,
-                  "0": lambda: (t.jump(0.5, 0),
-                                t.setheading_degrees(90))},
+                  "0": lambda: nodraw(t.jump(0.5, 0),
+                                      t.setheading_degrees(90))},
     8)
 
 levy_c = LSystemFractal(
@@ -157,10 +170,10 @@ levy_c = LSystemFractal(
     lambda d: 2 ** d,
     lambda d: 2 * 2 ** (d / 2.0),
     {"F": "+F--F+"},
-    lambda t, d: {"F": lambda: t.forward(1),
-                  "-": lambda: t.turn_degrees(-45),
-                  "+": lambda: t.turn_degrees(+45),
-                  "0": lambda: t.jump(0.25, 0.25)},
+    lambda t, d: {"F": lambda: draw(t.forward(1)),
+                  "-": lambda: nodraw(t.turn_degrees(-45)),
+                  "+": lambda: nodraw(t.turn_degrees(+45)),
+                  "0": lambda: nodraw(t.jump(0.25, 0.25))},
     18)
 
 hilbert = LSystemFractal(
@@ -170,11 +183,11 @@ hilbert = LSystemFractal(
     lambda d: 2 ** d,
     {"A": "-BF+AFA+FB-",
      "B": "+AF-BFB-FA+"},
-    lambda t, d: {"F": lambda: t.forward(1),
-                  "A": nop,
-                  "B": nop,
-                  "-": lambda: t.turn_degrees(+90),
-                  "+": lambda: t.turn_degrees(-90)},
+    lambda t, d: {"F": lambda: draw(t.forward(1)),
+                  "A": nodraw,
+                  "B": nodraw,
+                  "-": lambda: nodraw(t.turn_degrees(+90)),
+                  "+": lambda: nodraw(t.turn_degrees(-90))},
     8)
 
 sierp_hex = LSystemFractal(
@@ -184,10 +197,10 @@ sierp_hex = LSystemFractal(
     lambda d: 2 ** d,
     {"A": "B-A-B",
      "B": "A+B+A"},
-    lambda t, d: {"A": lambda: t.forward(1),
-                  "B": lambda: t.forward(1),
-                  "-": lambda: t.turn_degrees(-60 * (-1) ** d),
-                  "+": lambda: t.turn_degrees(60 * (-1) ** d)},
+    lambda t, d: {"A": lambda: draw(t.forward(1)),
+                  "B": lambda: draw(t.forward(1)),
+                  "-": lambda: nodraw(t.turn_degrees(-60 * (-1) ** d)),
+                  "+": lambda: nodraw(t.turn_degrees(60 * (-1) ** d))},
     8)
 
 koch = LSystemFractal(
@@ -196,10 +209,11 @@ koch = LSystemFractal(
     lambda d: 3 * 4 ** d,
     lambda d: 2 * sqrt(3) / 3 * 3 ** d,
     {"F": "F+F--F+F"},
-    lambda t, d: {"F": lambda: t.forward(1),
-                  "-": lambda: t.turn_degrees(60),
-                  "+": lambda: t.turn_degrees(-60),
-                  "0": lambda: t.jump(0.5 * (1 - 3 / (2 * sqrt(3))), 0.25)},
+    lambda t, d: {"F": lambda: draw(t.forward(1)),
+                  "-": lambda: nodraw(t.turn_degrees(60)),
+                  "+": lambda: nodraw(t.turn_degrees(-60)),
+                  "0": lambda: nodraw(
+                      t.jump(0.5 * (1 - 3 / (2 * sqrt(3))), 0.25))},
     8)
 
 koch_square = LSystemFractal(
@@ -208,10 +222,10 @@ koch_square = LSystemFractal(
     lambda d: 2 * 5 ** d,
     lambda d: 3 ** d,
     {"F": "F+F-F-F+F"},
-    lambda t, d: {"F": lambda: t.forward(1),
-                  "-": lambda: t.turn_degrees(-90),
-                  "+": lambda: t.turn_degrees(+90),
-                  "0": lambda: t.jump(0, 0.5)},
+    lambda t, d: {"F": lambda: draw(t.forward(1)),
+                  "-": lambda: nodraw(t.turn_degrees(-90)),
+                  "+": lambda: nodraw(t.turn_degrees(+90)),
+                  "0": lambda: nodraw(t.jump(0, 0.5))},
     7)
 
 # TODO: ParametrisedLSystemFractal
@@ -228,12 +242,12 @@ binary_tree = LSystemFractal(
     lambda d: 2 ** (d - 1) * 4 / 3 * (1 + 0.25 * sqrt(2)),
     {"1": "11",
      "0": "1[0]0"},
-    lambda t, d: {"0": lambda: t.forward(1),
-                  "1": lambda: t.forward(1),
-                  "[": lambda: (t.save_state(),
-                                t.turn_degrees(45)),
-                  "]": lambda: (t.restore_state(),
-                                t.turn_degrees(-45)),
-                  "_": lambda: (t.jump(0.5, 0),
-                                t.setheading_degrees(90))},
+    lambda t, d: {"0": lambda: draw(t.forward(1)),
+                  "1": lambda: draw(t.forward(1)),
+                  "[": lambda: nodraw(t.save_state(),
+                                      t.turn_degrees(45)),
+                  "]": lambda: nodraw(t.restore_state(),
+                                      t.turn_degrees(-45)),
+                  "_": lambda: nodraw(t.jump(0.5, 0),
+                                      t.setheading_degrees(90))},
     10)
