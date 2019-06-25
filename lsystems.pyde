@@ -7,7 +7,7 @@ incurring a significant slowdown, and I'm already slow enough because I'm using
 Python.
 """
 
-VIDEO = True
+VIDEO = False
 CYCLE_PAUSE = 300
 
 from collections import deque
