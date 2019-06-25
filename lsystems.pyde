@@ -99,8 +99,8 @@ def draw():
         advance()
         if render_to_buffer:
             image(fractal_graphics, 0, 0)
-        if VIDEO:
-            saveFrame("frames/lsystems-#############.png")
+    if VIDEO:
+        saveFrame("frames/lsystems-#############.png")
 
 def keyPressed():
     global iterations_per_frame, depth_delta
