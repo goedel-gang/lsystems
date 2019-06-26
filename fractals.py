@@ -84,9 +84,10 @@ class LSystemFractal(LSystemFractalTuple):
         """
         # TODO: probably we could do a little static analysis here in order to
         #       not consider symbols with no impact, although that's a little
-        #       graph theoretic.
-        self.symbols = list(set(chain(self.start,
-                                      *starmap(chain, self.rules.items()))))
+        #       too on the graph theoretic side for now, methinks
+        t = DummyTurtle()
+        draw_rules = self.draw_rules(t, 1)
+        self.symbols = list(draw_rules)
         # I don't even know if Python 2 has dictionary comprehensions, and I
         # don't really want to find out
         rule_counter = dict((symbol, Counter(self.rules.get(symbol, symbol)))
@@ -95,11 +96,9 @@ class LSystemFractal(LSystemFractalTuple):
                 [[rule_counter[symbol_to][symbol_from]
                     for symbol_to in self.symbols]
                     for symbol_from in self.symbols])
-        t = DummyTurtle()
         initial_counter = Counter(self.start)
         self.initial_vector = Matrix([[initial_counter[symbol]] for symbol in
                 self.symbols])
-        draw_rules = self.draw_rules(t, 1)
         self.stepping_symbols = set(symbol for symbol in self.symbols if
                 draw_rules[symbol]())
 
