@@ -6,7 +6,6 @@ See [1], and the various other wikipedia pages on fractals.
 """
 
 from collections import namedtuple, Counter
-from itertools import chain, starmap
 
 from matrix import Matrix
 
