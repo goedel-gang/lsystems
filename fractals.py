@@ -177,8 +177,11 @@ dragon = LSystemFractal(
 fern = LSystemFractal(
     "A Lindenmayer Fern",
     "0X",
-    # TODO: better approach to this
-    lambda d: 0.1 * 3 ** d,
+    # This is basically just noting that it doubles its dimension along each
+    # branch, and that it has some limit it approaches at its asymptote, found
+    # by trial and error. It would be nice to find this more exactly in terms of
+    # trigonometric functions of 25 degrees. (TODO)
+    lambda d: 2.718281828 * 2 ** d,
     {"X": "F+[[X]-X]-F[-FX]+X",
      "F": "FF"},
     lambda t, d: {"F": lambda: draw(t.forward(1)),
