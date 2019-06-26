@@ -122,15 +122,15 @@ def draw():
             saveFrame("frames/lsystems-#############.png")
 
 def keyPressed():
-    global iterations_per_frame, depth_delta
+    global frames_per_draw, depth_delta
     if not VIDEO:
         n = keyCode - ord('1')
         if 0 <= n < len(FRACTAL_REGISTRY):
             set_fractal_drawer(n)
         elif keyCode == LEFT:
-            iterations_per_frame = max(1, iterations_per_frame // 2)
+            frames_per_draw = max(1, frames_per_draw * 9 // 10)
         elif keyCode == RIGHT:
-            iterations_per_frame *= 2
+            frames_per_draw = frames_per_draw * 10 // 9
         elif keyCode == DOWN:
             depth_delta -= 1
         elif keyCode == UP:
