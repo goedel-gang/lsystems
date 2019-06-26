@@ -69,9 +69,9 @@ class Matrix(object):
         if n == 1:
             return self
         square = self ** (n // 2)
-        if n & 1:
-            return self * square * square
-        return square * square
+        # shorthand for n % 2. Guarantees short-circuit as 0 <= n % 2 < 2,
+        # necessarily.
+        return self ** (n & 1) * square * square
 
     def spaced_str(self, n=1):
         """
