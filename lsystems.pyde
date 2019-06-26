@@ -127,11 +127,17 @@ def keyPressed():
             set_fractal_drawer(n)
         elif keyCode == LEFT:
             frames_per_draw = max(1, frames_per_draw * 9 // 10)
+            print "frames per draw: {}".format(frames_per_draw)
         elif keyCode == RIGHT:
             frames_per_draw = frames_per_draw * 10 // 9
+            print "frames per draw: {}".format(frames_per_draw)
         elif keyCode == DOWN:
             depth_delta -= 1
+            set_fractal_drawer(cur_fractal_n)
+            print "depth delta: {}".format(depth_delta)
         elif keyCode == UP:
             depth_delta += 1
+            set_fractal_drawer(cur_fractal_n)
+            print "depth delta: {}".format(depth_delta)
     else:
         print "bro ur killin my flow"
