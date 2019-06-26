@@ -251,7 +251,7 @@ koch_square = LSystemFractal(
                   "-": lambda: nodraw(t.turn_degrees(-90)),
                   "+": lambda: nodraw(t.turn_degrees(+90)),
                   "0": lambda: nodraw(t.jump(0.25, 0.75))},
-    7)
+    6)
 
 # TODO: ParametrisedLSystemFractal
 binary_tree = LSystemFractal(
