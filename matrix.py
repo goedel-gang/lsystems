@@ -53,7 +53,8 @@ class Matrix(object):
     @classmethod
     def identity(cls, n):
         """
-        Get an n by n identity matrix
+        Get an n by n identity matrix. Uses the kind of Kronecker delta-like
+        property of booleans.
         """
         return cls([[int(x == y) for x in xrange(n)] for y in xrange(n)])
 
