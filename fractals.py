@@ -159,19 +159,20 @@ sierpinski = LSystemFractal(
 
 dragon = LSystemFractal(
     "The Dragon Curve",
-    "0FX",
-    # TODO: basically no idea about dragon dimensions, this is all guesswork.
+    "0[FX]-[FX]-[FX]-FX",
     lambda d: 2 * 2 ** (d / 2.0),
     {"X": "X+YF+",
      "Y": "-FX-Y"},
     lambda t, d: {"F": lambda: draw(t.forward(1)),
                   "-": lambda: nodraw(t.turn_degrees(+90)),
                   "+": lambda: nodraw(t.turn_degrees(-90)),
-                  "0": lambda: nodraw(t.turn_degrees(45 + 45 * d),
-                                      t.jump(0.35, 0.25)),
+                  "0": lambda: nodraw(t.jump(0.5, 0.5),
+                                      t.turn_degrees(45 * (d % 2 + 1))),
+                  "[": lambda: nodraw(t.save_state()),
+                  "]": lambda: nodraw(t.restore_state()),
                   "X": nodraw,
                   "Y": nodraw},
-    16)
+    15)
 
 fern = LSystemFractal(
     "A Lindenmayer Fern",
@@ -184,8 +185,8 @@ fern = LSystemFractal(
                   "-": lambda: nodraw(t.turn_degrees(+25)),
                   "+": lambda: nodraw(t.turn_degrees(-25)),
                   "X": nodraw,
-                  "[": t.save_state,
-                  "]": t.restore_state,
+                  "[": lambda: nodraw(t.save_state()),
+                  "]": lambda: nodraw(t.restore_state()),
                   "0": lambda: nodraw(t.jump(0.5, 0),
                                       t.setheading_degrees(90))},
     8)
