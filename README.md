@@ -13,7 +13,7 @@ squaring to calculate the count of each symbol at the `n`th iteration in
 `log(n)` time. This is a totally unnecessary but nevertheless awesome
 optimisation to be able to make.
 
-The version used to generate [this video](https://youtu.be/lcpQZpO5YEc) is at
+The version used to generate [this video](https://youtu.be/kf3hgNMjzX4) is at
 the [video tag](https://github.com/goedel-gang/lsystems/tree/video).
 
 Here are some screenshots:
