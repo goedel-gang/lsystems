@@ -5,7 +5,7 @@ See [1], and the various other wikipedia pages on fractals.
 [1]: https://en.wikipedia.org/wiki/L-system
 """
 
-from collections import namedtuple, Counter, defaultdict
+from collections import namedtuple, Counter
 from itertools import chain, starmap
 
 from matrix import Matrix
