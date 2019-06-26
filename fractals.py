@@ -62,7 +62,7 @@ class LSystemFractal(LSystemFractalTuple):
         self.generate_transition_matrix()
 
     def generate_transition_matrix(self):
-        r"""
+        """
         Generate the transition matrix for a single rewrite of an L-system. This
         can then be used to calculate the number of steps taken, in logarithmic
         time (in the number of iterations). This is because can use
