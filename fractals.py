@@ -244,13 +244,13 @@ koch = LSystemFractal(
 
 koch_square = LSystemFractal(
     "Square Koch Curve",
-    "0F--F",
-    lambda d: 3 ** d,
+    "0F-F-F-F",
+    lambda d: 2 * 3 ** d,
     {"F": "F+F-F-F+F"},
     lambda t, d: {"F": lambda: draw(t.forward(1)),
                   "-": lambda: nodraw(t.turn_degrees(-90)),
                   "+": lambda: nodraw(t.turn_degrees(+90)),
-                  "0": lambda: nodraw(t.jump(0, 0.5))},
+                  "0": lambda: nodraw(t.jump(0.25, 0.75))},
     7)
 
 # TODO: ParametrisedLSystemFractal
