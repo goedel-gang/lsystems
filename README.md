@@ -6,17 +6,19 @@ gradually, giving a nice "drawing" effect, rather than blocking for several
 frames. Basically the beauty of it is that having written all the "library"
 code, I can define fractals as simply as
 
-    sierpinski = LSystemFractal(
-        "Sierpinski's Gasket",
-        "F-G-G",
-        lambda d: 2 ** d,
-        {"F": "F-G+F+G-F",
-         "G": "GG"},
-        lambda t, d: {"F": lambda: draw(t.forward(1)),
-                      "G": lambda: draw(t.forward(1)),
-                      "-": lambda: nodraw(t.turn_degrees(+120)),
-                      "+": lambda: nodraw(t.turn_degrees(-120))},
-        10)
+```Python
+sierpinski = LSystemFractal(
+    "Sierpinski's Gasket",
+    "F-G-G",
+    lambda d: 2 ** d,
+    {"F": "F-G+F+G-F",
+        "G": "GG"},
+    lambda t, d: {"F": lambda: draw(t.forward(1)),
+                    "G": lambda: draw(t.forward(1)),
+                    "-": lambda: nodraw(t.turn_degrees(+120)),
+                    "+": lambda: nodraw(t.turn_degrees(-120))},
+    10)
+```
 
 As you can see, it's currently also very easy to read.
 
