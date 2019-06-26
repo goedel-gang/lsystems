@@ -1,5 +1,3 @@
-# vim: ft=python
-
 """
 Provides the Processing interface. Has several global flags to tweak the
 rendering mode. Ideally I'd just use a PGraphics everywhere, but that's
