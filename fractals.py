@@ -206,7 +206,7 @@ levy_c = LSystemFractal(
 hilbert = LSystemFractal(
     "Hilbert's Space-Filling Curve",
     "A",
-    lambda d: 2 ** d,
+    lambda d: 2 ** d - 1,
     {"A": "-BF+AFA+FB-",
      "B": "+AF-BFB-FA+"},
     lambda t, d: {"F": lambda: draw(t.forward(1)),
