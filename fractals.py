@@ -5,16 +5,28 @@ See [1], and the various other wikipedia pages on fractals.
 [1]: https://en.wikipedia.org/wiki/L-system
 """
 
-from collections import namedtuple
-from itertools import chain
+from collections import namedtuple, Counter, defaultdict
+from itertools import chain, starmap
 
 from matrix import Matrix
 
 LSystemFractalTuple = namedtuple(
         "LSystemFractalTuple",
-        "name start steps_func size_func rules draw_rules iterations")
+        "name start size_func rules draw_rules iterations")
 
 FRACTAL_REGISTRY = []
+
+class DummyTurtle(object):
+    """
+    Dummy turtle class, used to probe whether or not certain symbols correspond
+    to steps. See the LSystemFractal class.
+
+    Written in the most hacky, lazy way possible
+    """
+    def __init__(self):
+        for i in """forward turn setheading_degrees save_state restore_state
+                turn_degrees jump""".split():
+            self.__dict__[i] = lambda *args: None
 
 class LSystemFractal(LSystemFractalTuple):
     """
@@ -34,9 +46,6 @@ class LSystemFractal(LSystemFractalTuple):
     size_func:  A function taking an integer (the number of iterations) and
                 returning the expected largest dimension of the fractal (height
                 or width), given in unit drawing steps.
-    steps_func: A function taking an integer (the number of iterations) and
-                returning the expected number of steps to take. This is needed
-                for colouring.
     rules:      The rules for rewriting at each iteration, as a mapping object.
     draw_rules: The action to take when drawing for each symbol of the alphabet,
                 as a mapping again, this time mapping to nullary functions. This
@@ -50,6 +59,60 @@ class LSystemFractal(LSystemFractalTuple):
     def __init__(self, *args, **kwargs):
         FRACTAL_REGISTRY.append(self)
         super(LSystemFractalTuple, self).__init__(*args, **kwargs)
+        self.generate_transition_matrix()
+
+    def generate_transition_matrix(self):
+        r"""
+        Generate the transition matrix for a single rewrite of an L-system. This
+        can then be used to calculate the number of steps taken, in logarithmic
+        time (in the number of iterations). This is because can use
+        exponentiation by squaring on the transition matrix. This is an entirely
+        unnecessary optimisation, but it's a fun one to implement.
+
+        It's sometimes possible to actually solve the recurrence to give a
+        totally closed form for the number of times each symbol occurs. This
+        requires you to diagonalise the matrix though, which is generally messy
+        as
+        1) It doesn't leave you with integers (or necessarily rationals)
+        2) This isn't solvable by an algorithm for an n by n matrix, as if you
+           could solve arbitrary characteristic equations you could solve
+           arbitrary polynomials.
+        """
+        self.symbols = list(set(chain(self.start,
+                                      *starmap(chain, self.rules.items()))))
+        # I don't even know if Python 2 has dictionary comprehensions, and I
+        # don't really want to find out
+        rule_counter = dict((symbol, Counter(self.rules.get(symbol, symbol)))
+                for symbol in self.symbols)
+        print(rule_counter)
+        self.transition_matrix = Matrix(
+                [[rule_counter[symbol_to][symbol_from]
+                    for symbol_to in self.symbols]
+                    for symbol_from in self.symbols])
+        t = DummyTurtle()
+        initial_counter = Counter(self.start)
+        self.initial_vector = Matrix([[initial_counter[symbol]] for symbol in
+                self.symbols])
+        draw_rules = self.draw_rules(t, 1)
+        self.stepping_symbols = set(symbol for symbol in self.symbols if
+                draw_rules[symbol]())
+        print(self.initial_vector)
+        print(self.stepping_symbols)
+        print(self.symbols)
+        print(self.transition_matrix)
+
+    def project_steps(self, iterations):
+        """
+        Project the number of steps needed for a certain number of iterations.
+        In previous iterations, this function was crafted by hand for each
+        fractal, but then I had to implement a matrix class to efficiently
+        calculate this for the fern function, so I decided to automated the
+        whole thing, and take out a point of failure.
+        """
+        return sum(i[0] for i, sym in
+                zip(self.transition_matrix ** iterations * self.initial_vector,
+                    self.symbols)
+                if sym in self.stepping_symbols)
 
 def substitute(sequence, rules):
     """
@@ -83,7 +146,6 @@ def nodraw(*args):
 sierpinski = LSystemFractal(
     "Sierpinski's Gasket",
     "F-G-G",
-    lambda d: 3 ** d * 3,
     lambda d: 2 ** d,
     {"F": "F-G+F+G-F",
      "G": "GG"},
@@ -96,7 +158,6 @@ sierpinski = LSystemFractal(
 dragon = LSystemFractal(
     "The Dragon Curve",
     "0FX",
-    lambda d: 2 ** d,
     # TODO: basically no idea about dragon dimensions, this is all guesswork.
     lambda d: 2 * 2 ** (d / 2.0),
     {"X": "X+YF+",
@@ -110,46 +171,9 @@ dragon = LSystemFractal(
                   "Y": nodraw},
     16)
 
-def fern_steps(depth):
-    r"""
-    Helper function to calculate the number of steps for a Lindenmayer fern.
-    This should be logarithmic in the number of iterations, as it uses
-    exponentiation by squaring on the transition matrix. This is an entirely
-    unnecessary optimisation, but it's a fun one to implement.
-
-    Letting the state after `n` iterations be encoded in some matrix
-          / F_n \ <- number of 'F's in the string at the `n`th iteration
-    M_n = |     |
-          \ X_n / <- number of 'X's "
-    so then
-          / 0 \
-    M_0 = |   |
-          \ 1 /
-    and the transition to M_{n + 1} is encoded by
-    M_{n + 1} = T M_n, where
-        / 3  2 \
-    T = |      |
-        \ 0  4 /
-    So then
-    M_n = T ^ n M_0, and we can extract the value of F_n.
-
-    It's probably possible to actually solve this recurrence to give a totally
-    closed form for F_n, but
-    1) I'm not clever enough
-    2) This would still involve powers, so would not be asymptotically more
-       efficient
-    TODO: this is fairly doable. Just diagonalise T, basically. Not sure if
-          better done by hand or by program..
-
-    Of course this whole function could be inlined but then I would have to
-    sacrifice this beautiful docstring.
-    """
-    return (Matrix([[3, 2], [0, 4]]) ** depth * Matrix([[0], [1]])).array[0][0]
-
 fern = LSystemFractal(
     "A Lindenmayer Fern",
     "0X",
-    fern_steps,
     # TODO: better approach to this
     lambda d: 0.1 * 3 ** d,
     {"X": "F+[[X]-X]-F[-FX]+X",
@@ -167,7 +191,6 @@ fern = LSystemFractal(
 levy_c = LSystemFractal(
     "The Levy C Curve",
     "0F",
-    lambda d: 2 ** d,
     lambda d: 2 * 2 ** (d / 2.0),
     {"F": "+F--F+"},
     lambda t, d: {"F": lambda: draw(t.forward(1)),
@@ -179,7 +202,6 @@ levy_c = LSystemFractal(
 hilbert = LSystemFractal(
     "Hilbert's Space-Filling Curve",
     "A",
-    lambda d: 4 ** d,
     lambda d: 2 ** d,
     {"A": "-BF+AFA+FB-",
      "B": "+AF-BFB-FA+"},
@@ -193,7 +215,6 @@ hilbert = LSystemFractal(
 sierp_hex = LSystemFractal(
     "Sierpinski's Gasket Hexagonal Variant",
     "A",
-    lambda d: 3 ** d,
     lambda d: 2 ** d,
     {"A": "B-A-B",
      "B": "A+B+A"},
@@ -206,7 +227,6 @@ sierp_hex = LSystemFractal(
 koch = LSystemFractal(
     "Koch Snowflake",
     "0F--F--F",
-    lambda d: 3 * 4 ** d,
     lambda d: 2 * sqrt(3) / 3 * 3 ** d,
     {"F": "F+F--F+F"},
     lambda t, d: {"F": lambda: draw(t.forward(1)),
@@ -219,7 +239,6 @@ koch = LSystemFractal(
 koch_square = LSystemFractal(
     "Square Koch Curve",
     "0F--F",
-    lambda d: 2 * 5 ** d,
     lambda d: 3 ** d,
     {"F": "F+F-F-F+F"},
     lambda t, d: {"F": lambda: draw(t.forward(1)),
@@ -232,9 +251,6 @@ koch_square = LSystemFractal(
 binary_tree = LSystemFractal(
     "Binary Tree",
     "_0",
-    # see the Lindenmayer fern's documentation
-    lambda d: sum(chain(*(Matrix([[2, 0], [1, 2]]) ** d
-                        * Matrix([[1], [0]])).array)),
     # A messy, but not intrinsically hugely complicated pair of interlaced
     # geometric progressions
     # TODO: scale with depth, rather than assume infinity. Remember leaves are

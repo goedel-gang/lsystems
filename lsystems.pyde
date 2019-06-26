@@ -8,7 +8,7 @@ Python.
 """
 
 # Record each frame, and set other values to be suitable for video recording
-VIDEO = True
+VIDEO = False
 # Don't actually save any frames, but still set video default graphics options
 VIDEO_MOCK = False
 
@@ -40,7 +40,7 @@ def setup():
     else:
         render_to_buffer = False
         render_fullscreen = False
-        cycle = False
+        cycle = True
         frames_per_draw = 600
     set_fractal_drawer(0)
     colorMode(HSB, 255, 255, 255)
@@ -68,7 +68,7 @@ def set_fractal_drawer(n):
     cur_fractal_drawer = draw_fractal(fractal_graphics, fractal,
             min(fractal_graphics.width, fractal_graphics.height),
             fractal_depth)
-    projected_steps = fractal.steps_func(fractal_depth)
+    projected_steps = fractal.project_steps(fractal_depth)
     print "set to {}".format(fractal.name)
 
 def advance():
@@ -101,7 +101,10 @@ def draw():
             if cur_fractal_n < len(FRACTAL_REGISTRY):
                 set_fractal_drawer(cur_fractal_n)
             else:
-                exit()
+                if VIDEO:
+                    exit()
+                else:
+                    set_fractal_drawer(0)
     else:
         if render_to_buffer:
             background(0)

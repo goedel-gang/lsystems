@@ -20,7 +20,7 @@ def intersperse_it(_it, int_it):
 class Matrix(object):
     """
     Very bare bones matrix class, doing just enough for debugging and the
-    fern_steps function. This provides a nice asymptotically fast way to
+    project_steps function. This provides a nice asymptotically fast way to
     calculate the outcome of a bunch of linear transitions, which is useful in
     projecting the number of lines you will have to draw in an L-system.
     Realistically, it won't incur any overhead to simply compute it by brute
@@ -98,6 +98,8 @@ class Matrix(object):
                     intersperse_it(izip(self.array, delims),
                                    (([""] * len(self.array[0]), "||"),) * n))
 
+    def __iter__(self):
+        return iter(self.array)
 
     def __str__(self):
         return self.spaced_str(0)

@@ -88,7 +88,7 @@ def draw_fractal(graphics, fractal, w, depth):
     """
     t = ProcessingTurtle(graphics)
     path = fractal.start
-    expected_steps = fractal.steps_func(depth)
+    expected_steps = fractal.project_steps(depth)
     draw_rules = fractal.draw_rules(t, depth)
     t.input_rescale(fractal.size_func(depth))
     t.output_rescale(w)
