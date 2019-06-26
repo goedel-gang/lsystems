@@ -84,7 +84,6 @@ class LSystemFractal(LSystemFractalTuple):
         # don't really want to find out
         rule_counter = dict((symbol, Counter(self.rules.get(symbol, symbol)))
                 for symbol in self.symbols)
-        print(rule_counter)
         self.transition_matrix = Matrix(
                 [[rule_counter[symbol_to][symbol_from]
                     for symbol_to in self.symbols]
@@ -96,10 +95,6 @@ class LSystemFractal(LSystemFractalTuple):
         draw_rules = self.draw_rules(t, 1)
         self.stepping_symbols = set(symbol for symbol in self.symbols if
                 draw_rules[symbol]())
-        print(self.initial_vector)
-        print(self.stepping_symbols)
-        print(self.symbols)
-        print(self.transition_matrix)
 
     def project_steps(self, iterations):
         """
