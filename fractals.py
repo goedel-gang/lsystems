@@ -73,11 +73,18 @@ class LSystemFractal(LSystemFractalTuple):
         totally closed form for the number of times each symbol occurs. This
         requires you to diagonalise the matrix though, which is generally messy
         as
-        1) It doesn't leave you with integers (or necessarily rationals)
+        1) It doesn't leave you with integers (or necessarily rationals (or
+           necessarily reals))
         2) This isn't solvable by an algorithm for an n by n matrix, as if you
            could solve arbitrary characteristic equations you could solve
            arbitrary polynomials.
+        3) It isn't even asymptotically more optimal. In both cases you will
+           need to perform exponentiation, although the exponentiation of a
+           diagonal matrix obviously has the potential to be a little faster.
         """
+        # TODO: probably we could do a little static analysis here in order to
+        #       not consider symbols with no impact, although that's a little
+        #       graph theoretic.
         self.symbols = list(set(chain(self.start,
                                       *starmap(chain, self.rules.items()))))
         # I don't even know if Python 2 has dictionary comprehensions, and I
