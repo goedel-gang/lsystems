@@ -259,7 +259,7 @@ binary_tree = LSystemFractal(
     # geometric progressions
     # TODO: scale with depth, rather than assume infinity. Remember leaves are
     #       weird
-    lambda d: 2 ** (d - 1) * 4 / 3 * (1 + 0.25 * sqrt(2)),
+    lambda d: 1 + 2 ** (d - 1) * 4 / 3 * (1 + 0.25 * sqrt(2)),
     {"1": "11",
      "0": "1[0]0"},
     lambda t, d: {"0": lambda: draw(t.forward(1)),
