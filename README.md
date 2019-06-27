@@ -13,10 +13,7 @@ sierpinski = LSystemFractal(
     lambda d: 2 ** d,
     {"F": "F-G+F+G-F",
      "G": "GG"},
-    lambda t, d: {"F": lambda: draw(t.forward(1)),
-                  "G": lambda: draw(t.forward(1)),
-                  "-": lambda: nodraw(t.turn_degrees(+120)),
-                  "+": lambda: nodraw(t.turn_degrees(-120))},
+    lambda t, d: standard_rules(t, d, -120),
     10)
 ```
 
