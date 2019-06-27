@@ -24,6 +24,10 @@ def nodraw(*args):
     return False
 
 def standard_rules(t, d, angle=90, additions={}):
+    """
+    Provide the "standard" rule set, given the angle and the turtle and depth
+    arguments. Can also append further rules, which may override standard rules.
+    """
     rules = {"F": lambda: draw(t.forward(1)),
              "G": lambda: draw(t.forward(1)),
              "-": lambda: nodraw(t.turn_degrees(-angle)),
@@ -37,20 +41,20 @@ def standard_rules(t, d, angle=90, additions={}):
 
 sierpinski = LSystemFractal(
     "Sierpinski's Gasket",
-    "F-G-G",
+    "F+G+G",
     lambda d: 2 ** d,
-    {"F": "F-G+F+G-F",
+    {"F": "F+G-F-G+F",
      "G": "GG"},
-    lambda t, d: standard_rules(t, d, -120),
+    lambda t, d: standard_rules(t, d, 120),
     10)
 
 dragon = LSystemFractal(
     "The Dragon Curve",
-    "0[FX]-[FX]-[FX]-FX",
+    "0[FX]+[FX]+[FX]+FX",
     lambda d: 2 * 2 ** (d / 2.0),
-    {"X": "X+YF+",
-     "Y": "-FX-Y"},
-    lambda t, d: standard_rules(t, d, -90, additions=
+    {"X": "X-YF-",
+     "Y": "+FX+Y"},
+    lambda t, d: standard_rules(t, d, 90, additions=
                 {"0": lambda: nodraw(t.jump(0.5, 0.5),
                                      t.turn_degrees(45 * (d % 2 + 1)))}),
     15)
@@ -59,13 +63,13 @@ fern = LSystemFractal(
     "A Lindenmayer Fern",
     "0X",
     # This is basically just noting that it doubles its dimension along each
-    # branch, and that it has some limit it approaches at its asymptote, found
+    # branch, and that it has some limit it approaches at infinity, found
     # by trial and error. It would be nice to find this more exactly in terms of
     # trigonometric functions of 25 degrees. (TODO)
     lambda d: 2.718281828 * 2 ** d,
-    {"X": "F+[[X]-X]-F[-FX]+X",
+    {"X": "F-[[X]+X]+F[+FX]-X",
      "F": "FF"},
-    lambda t, d: standard_rules(t, d, -25, additions=
+    lambda t, d: standard_rules(t, d, 25, additions=
                 {"0": lambda: nodraw(t.jump(0.5, 0),
                                      t.setheading_degrees(90))}),
     8)
@@ -83,9 +87,9 @@ hilbert = LSystemFractal(
     "Hilbert's Space-Filling Curve",
     "X",
     lambda d: 2 ** d - 1,
-    {"X": "-YF+XFX+FY-",
-     "Y": "+XF-YFY-FX+"},
-    lambda t, d: standard_rules(t, d, -90),
+    {"X": "+YF-XFX-FY+",
+     "Y": "-XF+YFY+FX-"},
+    lambda t, d: standard_rules(t, d, 90),
     8)
 
 sierp_hex = LSystemFractal(
@@ -99,10 +103,10 @@ sierp_hex = LSystemFractal(
 
 koch = LSystemFractal(
     "Koch Snowflake",
-    "0F--F--F",
+    "0F++F++F",
     lambda d: 2 * sqrt(3) / 3 * 3 ** d,
-    {"F": "F+F--F+F"},
-    lambda t, d: standard_rules(t, d, -60, additions=
+    {"F": "F-F++F-F"},
+    lambda t, d: standard_rules(t, d, 60, additions=
             {"0": lambda: nodraw(t.jump(0.5 * (1 - 3 / (2 * sqrt(3))), 0.25))}),
     8)
 

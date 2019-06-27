@@ -9,11 +9,11 @@ code, I can define fractals as simply as
 ```Python
 sierpinski = LSystemFractal(
     "Sierpinski's Gasket",
-    "F-G-G",
+    "F+G+G",
     lambda d: 2 ** d,
-    {"F": "F-G+F+G-F",
+    {"F": "F+G-F-G+F",
      "G": "GG"},
-    lambda t, d: standard_rules(t, d, -120),
+    lambda t, d: standard_rules(t, d, 120),
     10)
 ```
 
