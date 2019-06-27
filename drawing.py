@@ -1,8 +1,5 @@
 """
-The drawing layer of abstraction
-
-It uses layered lazy generators so it is very memory-efficient - effectively
-using only a call-stack of the size of the number of iterations.
+The drawing layer of abstraction for Processing.
 """
 
 from math import sin, cos, pi, radians

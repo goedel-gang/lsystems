@@ -2,6 +2,9 @@
 Abstract classes and instances to draw L-system fractals.
 See [1], and the various other wikipedia pages on fractals.
 
+It uses layered lazy generators so it is very memory-efficient - effectively
+using only a call-stack of the size of the number of iterations.
+
 [1]: https://en.wikipedia.org/wiki/L-system
 """
 
