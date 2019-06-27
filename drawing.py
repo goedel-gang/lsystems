@@ -7,8 +7,6 @@ using only a call-stack of the size of the number of iterations.
 
 from math import sin, cos, pi, radians
 
-from fractals import substitute
-
 class ProcessingTurtle(object):
     """
     A little turtle class to execute the actual drawing of an L-system. Mostly
@@ -83,8 +81,7 @@ class ProcessingTurtle(object):
 
 def draw_fractal(graphics, fractal, w, depth):
     """
-    Draw an LSystemFractal, by repeatedly applying its own rewrite rules, in a
-    stack of lazy generators, and then using its drawing rules.
+    Draw an LSystemFractal, in a Processing sketch.
     """
     t = ProcessingTurtle(graphics)
     path = fractal.start
@@ -92,9 +89,7 @@ def draw_fractal(graphics, fractal, w, depth):
     draw_rules = fractal.draw_rules(t, depth)
     t.input_rescale(fractal.size_func(depth))
     t.output_rescale(w)
-    for _ in xrange(depth):
-        path = substitute(path, fractal.rules)
-    for symbol in path:
+    for symbol in fractal.generate(depth):
         graphics.stroke(255.0 * t.times_moved / expected_steps, 255, 255)
         if draw_rules[symbol]():
             yield

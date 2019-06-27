@@ -21,7 +21,8 @@ GUIDELINES = False
 from collections import deque
 from itertools import islice
 
-from fractals import FRACTAL_REGISTRY
+import fractals
+from fractal_base import FRACTAL_REGISTRY
 from drawing import draw_fractal
 
 def setup():
