@@ -16,7 +16,7 @@ VIDEO_MOCK = False
 CYCLE_PAUSE = 300
 
 # Take a screenshot of each fractal when it completes
-SCREENSHOT = True
+SCREENSHOT = False
 
 # draw some lines to work out where the centre is. Turns out I don't have the
 # requisite IQ and understanding of geometry to reliably see if things are

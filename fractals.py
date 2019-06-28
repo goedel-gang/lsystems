@@ -89,8 +89,7 @@ levy_c = LSystemFractal(
     "0F",
     lambda d: 2 * 2 ** (d / 2.0),
     {"F": "+F--F+"},
-    lambda t, d: standard_rules(t, 45, additions=
-                {"0": lambda: nodraw(t.jump(0.25, 0.25))}),
+    lambda t, d: standard_rules(t, 45, (0.25, 0.25)),
     16)
 
 hilbert = LSystemFractal(
@@ -116,8 +115,7 @@ koch = LSystemFractal(
     "0F++F++F",
     lambda d: 2 * sqrt(3) / 3 * 3 ** d,
     {"F": "F-F++F-F"},
-    lambda t, d: standard_rules(t, 60, additions=
-            {"0": lambda: nodraw(t.jump(0.5 * (1 - 3 / (2 * sqrt(3))), 0.25))}),
+    lambda t, d: standard_rules(t, 60, (0.5 * (1 - 3 / (2 * sqrt(3))), 0.25)),
     6)
 
 koch_square = LSystemFractal(
@@ -139,8 +137,7 @@ binary_tree = LSystemFractal(
     lambda d: 1 + 2 ** (d - 1) * 4 / 3 * (1 + 0.25 * sqrt(2)),
     {"G": "GG",
      "F": "G[+F]-F"},
-    lambda t, d: standard_rules(t, 45, additions=
-            {"0": lambda: nodraw(t.jump(0.5, 0))}),
+    lambda t, d: standard_rules(t, 45, (0.5, 0)),
     10)
 
 # TODO: some proper names here
