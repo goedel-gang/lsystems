@@ -210,6 +210,15 @@ kolam = LSystemFractal(
         {"A": nodraw, "B": nodraw, "C": nodraw, "D": nodraw}),
     3)
 
+bourke_triangle = LSystemFractal(
+    "Bourke Triangle",
+    "0[G]+[G]+[G]",
+    lambda d: 2 * 3 ** (d / 2.0),
+    {"F": "F-F+F",
+     "G": "F+F+F"},
+    lambda t, d: standard_rules(t, 120, (0.5, 0.5)),
+    8)
+
 bourke_bush_1 = LSystemFractal(
     "Bourke's first Bush",
     "0Y",
@@ -266,15 +275,6 @@ bourke_weed = LSystemFractal(
      "X": "+FY",
      "Y": "-FX"},
     lambda t, d: standard_rules(t, 22.5, (0.5, 0), 90),
-    8)
-
-bourke_triangle = LSystemFractal(
-    "Bourke Triangle",
-    "0[G]+[G]+[G]",
-    lambda d: 2 * 3 ** (d / 2.0),
-    {"F": "F-F+F",
-     "G": "F+F+F"},
-    lambda t, d: standard_rules(t, 120, (0.5, 0.5)),
     8)
 
 koch_island_1 = LSystemFractal(

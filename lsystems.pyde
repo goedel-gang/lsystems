@@ -16,7 +16,7 @@ VIDEO_MOCK = False
 CYCLE_PAUSE = 300
 
 # Take a screenshot of each fractal when it completes
-SCREENSHOT = False
+SCREENSHOT = True
 
 # draw some lines to work out where the centre is. Turns out I don't have the
 # requisite IQ and understanding of geometry to reliably see if things are
@@ -96,7 +96,7 @@ def advance():
                     "".join(c for c in
                     FRACTAL_REGISTRY[cur_fractal_n]
                         .name.lower().replace(" ", "_")
-                    if c == "_" or c.alnum()))
+                    if c == "_" or c.isalnum()))
             print("saving {}".format(scrot_name))
             save(scrot_name)
         if cycle:
