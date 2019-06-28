@@ -25,6 +25,7 @@ GUIDELINES = False
 
 from collections import deque
 from itertools import islice, izip
+from textwrap import dedent
 
 import fractals
 from fractal_base import FRACTAL_REGISTRY
@@ -37,6 +38,16 @@ assert len(FRACTAL_KEYS) >= len(FRACTAL_REGISTRY)
 
 FRACTAL_KEYMAP = dict((ord(key), ind) for ind, key in
         islice(enumerate(FRACTAL_KEYS), len(FRACTAL_REGISTRY)))
+
+def helptext():
+    print dedent("""\
+            This is an L-system drawing program. You can directly draw a fractal
+            by pressing a key, or you can let it cycle by itself. Press '?' to
+            re-print this menu.
+            Available fractals:""")
+    print "\n".join(
+        "{}: {}".format(key, i.name)
+        for key, i in izip(FRACTAL_KEYS, FRACTAL_REGISTRY))
 
 def setup():
     global render_to_buffer, render_fullscreen, cycle, cycling, depth_delta, \
@@ -57,13 +68,12 @@ def setup():
     set_fractal_drawer(0)
     colorMode(HSB, 255, 255, 255)
     noFill()
-    print "Available fractals:"
-    print "\n".join(
-        "{}: {}".format(key, i.name)
-        for key, i in izip(FRACTAL_KEYS, FRACTAL_REGISTRY))
+    helptext()
 
 def set_fractal_drawer(n):
-    global cur_fractal_drawer, fractal_graphics, cycling, projected_steps, cur_fractal_n
+    global cur_fractal_drawer, fractal_graphics, cycling, projected_steps, \
+           cur_fractal_n, has_screenshot
+    has_screenshot = False
     cur_fractal_n = n
     fractal = FRACTAL_REGISTRY[n]
     fractal_depth = max(fractal.iterations + depth_delta, 1)
@@ -84,14 +94,14 @@ def set_fractal_drawer(n):
     print "set to {}".format(fractal.name)
 
 def advance():
-    global cycling
+    global cycling, has_screenshot
     if cycling < 1 and render_to_buffer:
         fractal_graphics.beginDraw()
     # consume `iterations_per_frame` number of items from cur_fractal_drawer
     d = deque(islice(cur_fractal_drawer,
                      max(1, projected_steps // frames_per_draw)), maxlen=1)
     if not d:
-        if SCREENSHOT:
+        if not GUIDELINES and not has_screenshot and SCREENSHOT:
             scrot_name = "screenshots/{:02}_{}.png".format(cur_fractal_n,
                     "".join(c for c in
                     FRACTAL_REGISTRY[cur_fractal_n]
@@ -99,9 +109,10 @@ def advance():
                     if c == "_" or c.isalnum()))
             print("saving {}".format(scrot_name))
             save(scrot_name)
+            has_screenshot = True
         if cycle:
             print("preparing to cycle")
-            cycling = CYCLE_PAUSE
+            cycling = max(CYCLE_PAUSE, 1)
         else:
             cycling = 0
     if cycling < 1 and render_to_buffer:
@@ -142,7 +153,7 @@ def draw():
             saveFrame("frames/lsystems-#############.png")
 
 def keyPressed():
-    global frames_per_draw, depth_delta
+    global frames_per_draw, depth_delta, cycle
     if not VIDEO:
         if keyCode in FRACTAL_KEYMAP:
             set_fractal_drawer(FRACTAL_KEYMAP[keyCode])
@@ -157,8 +168,15 @@ def keyPressed():
             set_fractal_drawer(cur_fractal_n)
             print "depth delta: {}".format(depth_delta)
         elif keyCode == UP:
-            depth_delta += 1
+            depth_delta = 0
             set_fractal_drawer(cur_fractal_n)
             print "depth delta: {}".format(depth_delta)
+        elif key == "?":
+            helptext()
+        elif key == ".":
+            cycle = not cycle
+            print "cycle is set to {}".format(cycle)
+        elif isinstance(key, unicode):
+            print "I don't know what to do with {!r}".format(key)
     else:
         print "bro ur killin my flow"

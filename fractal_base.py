@@ -107,7 +107,8 @@ class LSystemFractal(LSystemFractalTuple):
         # statically, with no mocking.
         # This paragraph of justification is here because obviously it also
         # works to just take the set of keys for draw_rules.
-        self.symbols = list(set(chain(*starmap(chain, self.rules.items()))))
+        self.symbols = list(set(chain(self.axiom,
+                                      *starmap(chain, self.rules.items()))))
         # I don't even know if Python 2 has dictionary comprehensions, and I
         # don't really want to find out
         rule_counter = dict((symbol, Counter(self.rules.get(symbol, symbol)))

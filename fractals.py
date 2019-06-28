@@ -198,18 +198,25 @@ square_sierpinski = LSystemFractal(
     lambda d: 4 * (2 ** d) - 3,
     6)
 
-# A weird one - it becomes idempotent after the third iteration.
-# TODO: can this be made to generate further?
-kolam = LSystemFractal(
-    "Kolam",
-    "0-D--D",
-    {"A": "F++FFFF--F--FFFF++F++FFFF--F",
-     "B": "F--FFFF++F++FFFF--F--FFFF++F",
-     "C": "BFA--BFA",
-     "D": "CFC--CFC"},
-    lambda t, d: standard_rules(t, 45, (0.5, 1), additions=
-        {"A": nodraw, "B": nodraw, "C": nodraw, "D": nodraw}),
-    lambda d: 19 * sqrt(2),
+hexagonal_gosper = LSystemFractal(
+    "Hexagonal Gosper",
+    "0[FXF]--[FXF]--[FXF]",
+    {"X": "X+YF++YF-FX--FXFX-YF+",
+     "Y": "-FX+YFYF++YF+FX--FX-Y"},
+    lambda t, d: standard_rules(t, 60, (0.5, 0.5)),
+    # TODO ???
+    lambda d: 1 + 1.5 * 3 ** d,
+    4)
+
+quadratic_gosper = LSystemFractal(
+    "Quadratic Gosper",
+    "0[YF]-[YF]-[YF]-[YF]",
+    {"X": "XFX-YF-YF+FX+FX-YF-YFFX+YF+FXFXYF-FX+YF+FXFX+YF-FXYF-YF-FX+FX+YFYF-",
+     "Y": "+FXFX-YF-YF+FX+FXYF+FX-YFYF-FX-YF+FXYFYF-FX-YFFX+FX+YF-YF-FX+FX+YFY",
+     },
+    lambda t, d: standard_rules(t, 90, (0.5, 0.5)),
+    # TODO; this scales wrong
+    lambda d: 2 * 5 ** d,
     3)
 
 bourke_triangle = LSystemFractal(
@@ -283,7 +290,7 @@ koch_island_1 = LSystemFractal(
     "Koch Island 1",
     "0F+F+F+F",
     {"F": "F+F-F-FFF+F+F-F"},
-    lambda t, d: standard_rules(t, 90, (0.1, 0.6), 15),
+    lambda t, d: standard_rules(t, 90, (0.1, 0.57), 15),
     # TODO: total bodge here
     lambda d: 2 * 4 ** d,
     5)
@@ -292,7 +299,7 @@ koch_island_2 = LSystemFractal(
     "Koch Island 2",
     "0F+F+F+F",
     {"F": "F-FF+FF+F+F-F-FF+F+F-F-FF-FF+F"},
-    lambda t, d: standard_rules(t, 90, (0.15, 0.4), -25),
+    lambda t, d: standard_rules(t, 90, (0.15, 0.37), -25),
     # TODO: this is even worse
     lambda d: 1.2 * 7 ** d,
     3)
@@ -311,7 +318,7 @@ koch_island_4 = LSystemFractal(
     "Koch Island 4",
     "0F+F+F+F",
     {"F": "F+F-F-FF+F+F-F"},
-    lambda t, d: standard_rules(t, 90, (0.1, 0.6), -60),
+    lambda t, d: standard_rules(t, 90, (0.07, 0.63), -60),
     # TODO y u c k
     lambda d: 0.17 * 7 ** d,
     4)
@@ -329,7 +336,7 @@ bourke_rings = LSystemFractal(
     "Bourke Rings",
     "0F+F+F+F",
     {"F": "FF+F+F+F+F+F-F"},
-    lambda t, d: standard_rules(t, 90, (0.05, 0.5), -140),
+    lambda t, d: standard_rules(t, 90, (0.03, 0.52), -140),
     # TODO TODO TODO
     lambda d: 2 * 3 ** d,
     5)
@@ -338,30 +345,10 @@ bourke_2 = LSystemFractal(
     "Bourke 2",
     "0F+F+F+F",
     {"F": "FF+F-F+F+FF"},
-    lambda t, d: standard_rules(t, 90, (0.5, 0.5)),
-    lambda d: 5 + d + 3 ** d,
+    # TODO
+    lambda t, d: standard_rules(t, 90, (0.3, 0.3)),
+    lambda d: 5 + d + 0.7 * 3 ** d,
     4)
-
-hexagonal_gosper = LSystemFractal(
-    "Hexagonal Gosper",
-    "0XF",
-    {"X": "X+YF++YF-FX--FXFX-YF+",
-     "Y": "-FX+YFYF++YF+FX--FX-Y"},
-    lambda t, d: standard_rules(t, 60, (0.5, 0), -7.5 * d),
-    # TODO gnhhhhhhhhh
-    lambda d: 5 * 2 ** d,
-    5)
-
-quadratic_gosper = LSystemFractal(
-    "Quadratic Gosper",
-    "YF",
-    {"X": "XFX-YF-YF+FX+FX-YF-YFFX+YF+FXFXYF-FX+YF+FXFX+YF-FXYF-YF-FX+FX+YFYF-",
-     "Y": "+FXFX-YF-YF+FX+FXYF+FX-YFYF-FX-YF+FXYFYF-FX-YFFX+FX+YF-YF-FX+FX+YFY",
-     },
-    lambda t, d: standard_rules(t),
-    # TODO; this scales wrong
-    lambda d: 2 * 4 ** d,
-    3)
 
 if __name__ == "__main__":
     from fractal_base import FRACTAL_REGISTRY
