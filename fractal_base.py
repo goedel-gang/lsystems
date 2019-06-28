@@ -9,6 +9,7 @@ using only a call-stack of the size of the number of iterations.
 """
 
 from collections import namedtuple, Counter
+from itertools import chain, starmap
 from pprint import pformat
 from textwrap import dedent
 
@@ -44,8 +45,8 @@ class LSystemFractal(LSystemFractalTuple):
     using that symbol to perform setup. To execute multiple lines of setup in a
     single line, you can use a tuple. The turtle's forward() method should be
     scaled so that if you use forward(1) for each accounted drawing step, it
-    will fit in the square. The setpos() and jump() methods take inputs in [0,
-    1]^2 though.
+    will fit in the square. The setpos() and jump() methods take inputs in
+    [0, 1]^2 though.
     Properties:
     axiom:      initial string
     rules:      The rules for rewriting at each iteration, as a mapping object.
@@ -61,6 +62,9 @@ class LSystemFractal(LSystemFractalTuple):
                 be drawn in, so the fractal can make adjustments for itself and
                 access drawing methods. If a rule returns a truthy value when
                 called, that is taken to mean that it has constituted a step.
+                It would be appreciated if the number of rules and drawing
+                category is invariant for turtle and depth inputs, for static
+                analysis purposes.
     size_func:  A function taking an integer (the number of iterations) and
                 returning the expected largest dimension of the fractal (height
                 or width), given in unit drawing steps.
@@ -97,7 +101,13 @@ class LSystemFractal(LSystemFractalTuple):
         #       too on the graph theoretic side for now, methinks
         t = DummyTurtle()
         draw_rules = self.draw_rules(t, 1)
-        self.symbols = list(draw_rules)
+        # Extract symbols from rules. This allows passing in redundant drawing
+        # rules without performance penalty (which is useful if you just
+        # maintain a standard ruleset), and further takes place entirely
+        # statically, with no mocking.
+        # This paragraph of justification is here because obviously it also
+        # works to just take the set of keys for draw_rules.
+        self.symbols = list(set(chain(*starmap(chain, self.rules.items()))))
         # I don't even know if Python 2 has dictionary comprehensions, and I
         # don't really want to find out
         rule_counter = dict((symbol, Counter(self.rules.get(symbol, symbol)))
