@@ -5,6 +5,8 @@ incurring a significant slowdown, and I'm already slow enough because I'm using
 Python.
 """
 
+# TODO: shuffle mode
+
 # Record each frame, and set other values to be suitable for video recording
 VIDEO = False
 # Don't actually save any frames, but still set video default graphics options
@@ -22,11 +24,19 @@ SCREENSHOT = True
 GUIDELINES = False
 
 from collections import deque
-from itertools import islice
+from itertools import islice, izip
 
 import fractals
 from fractal_base import FRACTAL_REGISTRY
 from drawing import draw_fractal
+
+# The order in which to assign keys to fractals from FRACTAL_REGISTRY.
+FRACTAL_KEYS = "1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
+
+assert len(FRACTAL_KEYS) >= len(FRACTAL_REGISTRY)
+
+FRACTAL_KEYMAP = dict((ord(key), ind) for ind, key in
+        islice(enumerate(FRACTAL_KEYS), len(FRACTAL_REGISTRY)))
 
 def setup():
     global render_to_buffer, render_fullscreen, cycle, cycling, depth_delta, \
@@ -49,8 +59,8 @@ def setup():
     noFill()
     print "Available fractals:"
     print "\n".join(
-        "{}: {}".format(ind, i.name)
-        for ind, i in enumerate(FRACTAL_REGISTRY, 1))
+        "{}: {}".format(key, i.name)
+        for key, i in izip(FRACTAL_KEYS, FRACTAL_REGISTRY))
 
 def set_fractal_drawer(n):
     global cur_fractal_drawer, fractal_graphics, cycling, projected_steps, cur_fractal_n
@@ -82,10 +92,11 @@ def advance():
                      max(1, projected_steps // frames_per_draw)), maxlen=1)
     if not d:
         if SCREENSHOT:
-            scrot_name = "screenshots/{}.png".format("".join(c for c in
+            scrot_name = "screenshots/{:02}_{}.png".format(cur_fractal_n,
+                    "".join(c for c in
                     FRACTAL_REGISTRY[cur_fractal_n]
                         .name.lower().replace(" ", "_")
-                    if c == "_" or c.isalpha()))
+                    if c == "_" or c.alnum()))
             print("saving {}".format(scrot_name))
             save(scrot_name)
         if cycle:
@@ -133,9 +144,8 @@ def draw():
 def keyPressed():
     global frames_per_draw, depth_delta
     if not VIDEO:
-        n = keyCode - ord('1')
-        if 0 <= n < len(FRACTAL_REGISTRY):
-            set_fractal_drawer(n)
+        if keyCode in FRACTAL_KEYMAP:
+            set_fractal_drawer(FRACTAL_KEYMAP[keyCode])
         elif keyCode == LEFT:
             frames_per_draw = max(1, frames_per_draw * 9 // 10)
             print "frames per draw: {}".format(frames_per_draw)

@@ -45,6 +45,7 @@ class ProcessingTurtle(object):
                                self.y * self.output_scale,
                                nx * self.output_scale,
                                ny * self.output_scale)
+            self.times_moved += 1
         self.jump(nx, ny)
 
     def jump(self, nx, ny):
@@ -57,7 +58,10 @@ class ProcessingTurtle(object):
     def forward(self, steps):
         self.setpos(self.x + 1.0 * steps / self.input_scale * cos(self.heading),
                     self.y + 1.0 * steps / self.input_scale * sin(self.heading))
-        self.times_moved += 1
+
+    def fjump(self, steps):
+        self.jump(self.x + 1.0 * steps / self.input_scale * cos(self.heading),
+                  self.y + 1.0 * steps / self.input_scale * sin(self.heading))
 
     def turn_degrees(self, angle):
         self.heading += radians(angle)

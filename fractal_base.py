@@ -27,7 +27,7 @@ class DummyTurtle(object):
     """
     def __init__(self):
         for i in """forward turn setheading_degrees save_state restore_state
-                turn_degrees jump""".split():
+                turn_degrees jump fjump""".split():
             self.__dict__[i] = lambda *args: None
 
 class LSystemFractal(LSystemFractalTuple):
@@ -49,6 +49,11 @@ class LSystemFractal(LSystemFractalTuple):
                 returning the expected largest dimension of the fractal (height
                 or width), given in unit drawing steps.
     rules:      The rules for rewriting at each iteration, as a mapping object.
+                This need only work properly together with `start`, so that each
+                member of start that needs to be replaced has an entry in
+                `rules`, and further each entry in `rules` has this property. Of
+                course, dictionaries of characters to strings are a nice way to
+                do this.
     draw_rules: The action to take when drawing for each symbol of the alphabet,
                 as a mapping again, this time mapping to nullary functions. This
                 is a function of a turtle-like object, the depth of the fractal,
