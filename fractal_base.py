@@ -9,12 +9,14 @@ using only a call-stack of the size of the number of iterations.
 """
 
 from collections import namedtuple, Counter
+from pprint import pformat
+from textwrap import dedent
 
 from matrix import Matrix
 
 LSystemFractalTuple = namedtuple(
         "LSystemFractalTuple",
-        "name start size_func rules draw_rules iterations")
+        "name axiom rules draw_rules size_func iterations")
 
 FRACTAL_REGISTRY = []
 
@@ -44,23 +46,23 @@ class LSystemFractal(LSystemFractalTuple):
     for each accounted drawing step, it will fit in the square. The setpos() and
     jump() methods take inputs in [0, 1]^2 though.
     Properties:
-    start:      initial string
-    size_func:  A function taking an integer (the number of iterations) and
-                returning the expected largest dimension of the fractal (height
-                or width), given in unit drawing steps.
+    axiom:      initial string
     rules:      The rules for rewriting at each iteration, as a mapping object.
-                This need only work properly together with `start`, so that each
-                member of start that needs to be replaced has an entry in
+                This need only work properly together with `axiom`, so that each
+                element of axiom that needs to be replaced has an entry in
                 `rules`, and further each entry in `rules` has this property. Of
                 course, dictionaries of characters to strings are a nice way to
                 do this.
     draw_rules: The action to take when drawing for each symbol of the alphabet,
-                as a mapping again, this time mapping to nullary functions. This
-                is a function of a turtle-like object, the depth of the fractal,
-                and the width of the square it should be drawn in, so the
-                fractal can make adjustments for itself and access drawing
-                methods. If a rule returns a truthy value when called, that is
-                taken to mean that it has constituted a step.
+                as a mapping again (supporting .get()), this time mapping to
+                nullary functions. This is a function of a turtle-like object,
+                the depth of the fractal, and the width of the square it should
+                be drawn in, so the fractal can make adjustments for itself and
+                access drawing methods. If a rule returns a truthy value when
+                called, that is taken to mean that it has constituted a step.
+    size_func:  A function taking an integer (the number of iterations) and
+                returning the expected largest dimension of the fractal (height
+                or width), given in unit drawing steps.
     iterations: The default number of iterations to perform.
     """
     def __init__(self, *args, **kwargs):
@@ -103,7 +105,7 @@ class LSystemFractal(LSystemFractalTuple):
                 [[rule_counter[symbol_to][symbol_from]
                     for symbol_to in self.symbols]
                     for symbol_from in self.symbols])
-        initial_counter = Counter(self.start)
+        initial_counter = Counter(self.axiom)
         self.initial_vector = Matrix([[initial_counter[symbol]] for symbol in
                 self.symbols])
         self.stepping_symbols = set(symbol for symbol in self.symbols if
@@ -129,9 +131,27 @@ class LSystemFractal(LSystemFractalTuple):
         of the depth.
         """
         if depth <= 0:
-            for sym in self.start:
+            for sym in self.axiom:
                 yield sym
         else:
             for sym in self.generate(depth - 1):
                 for gen_sym in self.rules.get(sym, sym):
                     yield gen_sym
+
+    def __str__(self):
+        return dedent("""\
+                LSystemFractal: {}
+                Axiom:
+                {!r}
+                Rules:
+                {}
+                Symbol table:
+                {}
+                Stepping symbol table:
+                {}
+                Initial state vector:
+                {}
+                Transition matrix:
+                {}""").format(self.name, self.axiom, pformat(self.rules),
+                    pformat(self.symbols), pformat(self.stepping_symbols),
+                    self.initial_vector, self.transition_matrix)

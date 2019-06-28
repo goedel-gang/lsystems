@@ -10,11 +10,11 @@ code, I can define fractals as simply as
 sierpinski = LSystemFractal(
     "Sierpinski's Gasket",
     "F+G+G",
-    lambda d: 2 ** d,
     {"F": "F+G-F-G+F",
      "G": "GG"},
-    lambda t, d: standard_rules(t, d, 120),
-    10)
+    lambda t, d: standard_rules(t, 120),
+    lambda d: 2 ** d,
+    9)
 ```
 
 As you can see, it's currently also very easy to read.

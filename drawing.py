@@ -85,7 +85,6 @@ def draw_fractal(graphics, fractal, w, depth):
     Draw an LSystemFractal, in a Processing sketch.
     """
     t = ProcessingTurtle(graphics)
-    path = fractal.start
     expected_steps = fractal.project_steps(depth)
     draw_rules = fractal.draw_rules(t, depth)
     t.input_rescale(fractal.size_func(depth))
