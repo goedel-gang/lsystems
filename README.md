@@ -32,12 +32,12 @@ the [video tag](https://github.com/goedel-gang/lsystems/tree/video).
 
 Here are some screenshots:
 
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/sierpinski.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/dragon.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/fern.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/levyC.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/hilbert.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/sierp_hex.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/sierpinskis_gasket.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/the_dragon_curve.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/a_lindenmayer_fern.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/the_levy_c_curve.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/hilberts_spacefilling_curve.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/sierpinskis_gasket_hexagonal_variant.png)
 ![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/koch_snowflake.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/koch_square.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/square_koch_curve.png)
 ![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/binary_tree.png)

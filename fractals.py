@@ -46,7 +46,7 @@ sierpinski = LSystemFractal(
     {"F": "F+G-F-G+F",
      "G": "GG"},
     lambda t, d: standard_rules(t, d, 120),
-    10)
+    9)
 
 dragon = LSystemFractal(
     "The Dragon Curve",
@@ -81,7 +81,7 @@ levy_c = LSystemFractal(
     {"F": "+F--F+"},
     lambda t, d: standard_rules(t, d, 45, additions=
                 {"0": lambda: nodraw(t.jump(0.25, 0.25))}),
-    18)
+    16)
 
 hilbert = LSystemFractal(
     "Hilbert's Space-Filling Curve",
@@ -108,7 +108,7 @@ koch = LSystemFractal(
     {"F": "F-F++F-F"},
     lambda t, d: standard_rules(t, d, 60, additions=
             {"0": lambda: nodraw(t.jump(0.5 * (1 - 3 / (2 * sqrt(3))), 0.25))}),
-    8)
+    6)
 
 koch_square = LSystemFractal(
     "Square Koch Curve",

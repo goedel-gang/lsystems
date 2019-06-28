@@ -13,6 +13,9 @@ VIDEO_MOCK = False
 # When automatically cycling, pause for this many frames
 CYCLE_PAUSE = 300
 
+# Take a screenshot of each fractal when it completes
+SCREENSHOT = True
+
 # draw some lines to work out where the centre is. Turns out I don't have the
 # requisite IQ and understanding of geometry to reliably see if things are
 # centred right.
@@ -78,6 +81,13 @@ def advance():
     d = deque(islice(cur_fractal_drawer,
                      max(1, projected_steps // frames_per_draw)), maxlen=1)
     if not d:
+        if SCREENSHOT:
+            scrot_name = "screenshots/{}.png".format("".join(c for c in
+                    FRACTAL_REGISTRY[cur_fractal_n]
+                        .name.lower().replace(" ", "_")
+                    if c == "_" or c.isalpha()))
+            print("saving {}".format(scrot_name))
+            save(scrot_name)
         if cycle:
             print("preparing to cycle")
             cycling = CYCLE_PAUSE
