@@ -1,2 +1,0 @@
-L (Lindenmayer) systems are a way to express many fractals as a set of rules for rewriting strings - in a kind of Goedel-Escher-Bach way. This project aims to leverage the Python language in conjunction with the Processing runtime to generate lots of pretty fractals in such a way that it is "easy" to add more. Source can be found at
-https://github.com/goedel-gang/lsystems. The code used to generate this video is on the `video` tag.
