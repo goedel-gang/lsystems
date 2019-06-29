@@ -19,8 +19,6 @@ LSystemFractalTuple = namedtuple(
         "LSystemFractalTuple",
         "name axiom rules draw_rules size_func iterations")
 
-FRACTAL_REGISTRY = []
-
 class DummyTurtle(object):
     """
     Dummy turtle class, used to probe whether or not certain symbols correspond
@@ -37,16 +35,14 @@ class LSystemFractal(LSystemFractalTuple):
     """
     Class representing an L-system fractal. This is a thick wrapper around the
     namedtuple that stores the fields (which is nice because that makes the
-    fields immutable), but additionally, this automatically registers any new
-    fractals in the FRACTAL_REGISTRY. Fractals should expect to be drawn in a
-    square box with side length 1 and one corner at (0, 0). The initial drawing
-    state will be a turtle at (0, 0) facing in the direction of the x-axis. This
-    can be modified by prefixing the initial string with a dummy "0" symbol, and
-    using that symbol to perform setup. To execute multiple lines of setup in a
-    single line, you can use a tuple. The turtle's forward() method should be
-    scaled so that if you use forward(1) for each accounted drawing step, it
-    will fit in the square. The setpos() and jump() methods take inputs in
-    [0, 1]^2 though.
+    fields immutable). Fractals should expect to be drawn in a square box with
+    side length 1 and one corner at (0, 0). The initial drawing state will be a
+    turtle at (0, 0) facing in the direction of the x-axis. This can be modified
+    by prefixing the initial string with a dummy "0" symbol, and using that
+    symbol to perform setup. To execute multiple lines of setup in a single
+    line, you can use a tuple. The turtle's forward() method should be scaled so
+    that if you use forward(1) for each accounted drawing step, it will fit in
+    the square. The setpos() and jump() methods take inputs in [0, 1]^2 though.
     Properties:
     axiom:      initial string
     rules:      The rules for rewriting at each iteration, as a mapping object.
@@ -71,7 +67,6 @@ class LSystemFractal(LSystemFractalTuple):
     iterations: The default number of iterations to perform.
     """
     def __init__(self, *args, **kwargs):
-        FRACTAL_REGISTRY.append(self)
         super(LSystemFractalTuple, self).__init__(*args, **kwargs)
         self.generate_transition_matrix()
 

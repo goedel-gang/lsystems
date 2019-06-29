@@ -14,6 +14,16 @@ from math import sqrt
 
 from fractal_base import LSystemFractal
 
+fractal_registry = []
+
+def register_fractal(*args, **kwargs):
+    """
+    Dummy wrapper around LSystemFractal that also registers fractals in a list.
+    """
+    fractal = LSystemFractal(*args, **kwargs)
+    fractal_registry.append(fractal)
+    return fractal
+
 def draw(*args):
     """
     Dummy function that returns True, for nicer semantics in defining L systems.
@@ -55,7 +65,7 @@ def standard_rules(t, angle=90, initial_pos=(0, 0), initial_heading=0,
     rules.update(additions)
     return rules
 
-sierpinski = LSystemFractal(
+sierpinski = register_fractal(
     "Sierpinski's Gasket",
     "F+G+G",
     {"F": "F+G-F-G+F",
@@ -64,7 +74,7 @@ sierpinski = LSystemFractal(
     lambda d: 2 ** d,
     9)
 
-dragon = LSystemFractal(
+dragon = register_fractal(
     "The Dragon Curve",
     "0[FX]+[FX]+[FX]+FX",
     {"X": "X-YF-",
@@ -73,7 +83,7 @@ dragon = LSystemFractal(
     lambda d: 2 * 2 ** (d / 2.0),
     15)
 
-fern = LSystemFractal(
+fern = register_fractal(
     "A Lindenmayer Fern",
     "0X",
     # This is basically just noting that it doubles its dimension along each
@@ -86,7 +96,7 @@ fern = LSystemFractal(
     lambda d: 2.718281828 * 2 ** d,
     9)
 
-levy_c = LSystemFractal(
+levy_c = register_fractal(
     "The Levy C Curve",
     "0F",
     {"F": "+F--F+"},
@@ -94,7 +104,7 @@ levy_c = LSystemFractal(
     lambda d: 2 * 2 ** (d / 2.0),
     16)
 
-hilbert = LSystemFractal(
+hilbert = register_fractal(
     "Hilbert's Space-Filling Curve",
     "X",
     {"X": "+YF-XFX-FY+",
@@ -103,7 +113,7 @@ hilbert = LSystemFractal(
     lambda d: 2 ** d - 1,
     8)
 
-sierp_hex = LSystemFractal(
+sierp_hex = register_fractal(
     "Sierpinski's Gasket Hexagonal Variant",
     "F",
     {"F": "G-F-G",
@@ -112,7 +122,7 @@ sierp_hex = LSystemFractal(
     lambda d: 2 ** d,
     8)
 
-koch = LSystemFractal(
+koch = register_fractal(
     "Koch Snowflake",
     "0F++F++F",
     {"F": "F-F++F-F"},
@@ -120,7 +130,7 @@ koch = LSystemFractal(
     lambda d: 2 * sqrt(3) / 3 * 3 ** d,
     6)
 
-koch_square = LSystemFractal(
+koch_square = register_fractal(
     "Square Koch Curve",
     "0F-F-F-F",
     {"F": "F+F-F-F+F"},
@@ -128,8 +138,8 @@ koch_square = LSystemFractal(
     lambda d: 2 * 3 ** d,
     6)
 
-# TODO: ParametrisedLSystemFractal
-binary_tree = LSystemFractal(
+# TODO: Parametrisedregister_fractal
+binary_tree = register_fractal(
     "Binary Tree",
     "0++F",
     {"G": "GG",
@@ -145,7 +155,7 @@ binary_tree = LSystemFractal(
 # TODO: some proper names here
 #       Also, basically all of these are total guesswork as to the dimensions.
 
-crystal = LSystemFractal(
+crystal = register_fractal(
     "Crystal",
     "F+F+F+F",
     {"F": "FF+F++F+F"},
@@ -153,7 +163,7 @@ crystal = LSystemFractal(
     lambda d: 3 ** d,
     6)
 
-peano = LSystemFractal(
+peano = register_fractal(
     "Peano Curve",
     "X",
     {"X": "XFYFX+F+YFXFY-F-XFYFX",
@@ -162,7 +172,7 @@ peano = LSystemFractal(
     lambda d: 3 ** d - 1,
     5)
 
-krishna_anklets = LSystemFractal(
+krishna_anklets = register_fractal(
     "Krishna Anklets",
     "0-X--X",
     {"X": "XFX--XFX"},
@@ -170,7 +180,7 @@ krishna_anklets = LSystemFractal(
     lambda d: sqrt(2) * (2 ** d - 1),
     7)
 
-mango = LSystemFractal(
+mango = register_fractal(
     "Mango",
     "0_Y---Y",
     {"X": "F-FF-F--[--X]F-FF-F--F-FF-F--",
@@ -181,7 +191,7 @@ mango = LSystemFractal(
     lambda d: sqrt(3) * (3 * d - 2),
     22)
 
-board = LSystemFractal(
+board = register_fractal(
     "Board",
     "F+F+F+F",
     {"F": "FF+F+F+F+FF"},
@@ -189,7 +199,7 @@ board = LSystemFractal(
     lambda d: 3 ** d,
     5)
 
-square_sierpinski = LSystemFractal(
+square_sierpinski = register_fractal(
     "Square Sierpinski",
     "0_F+XF+F+XF",
     {"X": "XF-F+F-XF+F+XF-F+F-X"},
@@ -198,7 +208,7 @@ square_sierpinski = LSystemFractal(
     lambda d: 4 * (2 ** d) - 3,
     6)
 
-hexagonal_gosper = LSystemFractal(
+hexagonal_gosper = register_fractal(
     "Hexagonal Gosper",
     "0[FXF]--[FXF]--[FXF]",
     {"X": "X+YF++YF-FX--FXFX-YF+",
@@ -208,7 +218,7 @@ hexagonal_gosper = LSystemFractal(
     lambda d: 1 + 1.5 * 3 ** d,
     4)
 
-quadratic_gosper = LSystemFractal(
+quadratic_gosper = register_fractal(
     "Quadratic Gosper",
     "0[YF]-[YF]-[YF]-[YF]",
     {"X": "XFX-YF-YF+FX+FX-YF-YFFX+YF+FXFXYF-FX+YF+FXFX+YF-FXYF-YF-FX+FX+YFYF-",
@@ -219,7 +229,7 @@ quadratic_gosper = LSystemFractal(
     lambda d: 2 * 5 ** d,
     3)
 
-bourke_triangle = LSystemFractal(
+bourke_triangle = register_fractal(
     "Bourke Triangle",
     "0[G]+[G]+[G]",
     {"F": "F-F+F",
@@ -228,7 +238,7 @@ bourke_triangle = LSystemFractal(
     lambda d: 2 * 3 ** (d / 2.0),
     8)
 
-bourke_bush_1 = LSystemFractal(
+bourke_bush_1 = register_fractal(
     "Bourke's first Bush",
     "0Y",
     {"X": "X[-FFF][+FFF]FX",
@@ -237,7 +247,7 @@ bourke_bush_1 = LSystemFractal(
     lambda d: 2 * 2 ** d,
     7)
 
-bourke_bush_2 = LSystemFractal(
+bourke_bush_2 = register_fractal(
     "Bourke's second Bush",
     "0F",
     {"F": "FF+[+F-F-F]-[-F+F+F]"},
@@ -245,7 +255,7 @@ bourke_bush_2 = LSystemFractal(
     lambda d: 4 * 2 ** d,
     6)
 
-bourke_bush_3 = LSystemFractal(
+bourke_bush_3 = register_fractal(
     "Bourke's third Bush",
     "0F",
     {"F": "F[+FF][-FF]F[-F][+F]F"},
@@ -253,7 +263,7 @@ bourke_bush_3 = LSystemFractal(
     lambda d: 3 ** d,
     5)
 
-saupe_bush = LSystemFractal(
+saupe_bush = register_fractal(
     "Saupe's Bush",
     "0VZFFF",
     {"V": "[+++W][---W]YV",
@@ -267,7 +277,7 @@ saupe_bush = LSystemFractal(
     lambda d: 2.5 * 3 * d,
     13)
 
-bourke_stick = LSystemFractal(
+bourke_stick = register_fractal(
     "Bourke Stick",
     "0X",
     {"F": "FF",
@@ -276,7 +286,7 @@ bourke_stick = LSystemFractal(
     lambda d: 2.3 * 2 ** d,
     9)
 
-bourke_weed = LSystemFractal(
+bourke_weed = register_fractal(
     "Bourke Weed",
     "0F",
     {"F": "FF-[XY]+[XY]",
@@ -286,7 +296,7 @@ bourke_weed = LSystemFractal(
     lambda d: 2.3 * 2 ** d,
     8)
 
-koch_island_1 = LSystemFractal(
+koch_island_1 = register_fractal(
     "Koch Island 1",
     "0F+F+F+F",
     {"F": "F+F-F-FFF+F+F-F"},
@@ -295,7 +305,7 @@ koch_island_1 = LSystemFractal(
     lambda d: 2 * 4 ** d,
     5)
 
-koch_island_2 = LSystemFractal(
+koch_island_2 = register_fractal(
     "Koch Island 2",
     "0F+F+F+F",
     {"F": "F-FF+FF+F+F-F-FF+F+F-F-FF-FF+F"},
@@ -304,7 +314,7 @@ koch_island_2 = LSystemFractal(
     lambda d: 1.2 * 7 ** d,
     3)
 
-koch_island_3 = LSystemFractal(
+koch_island_3 = register_fractal(
     "Koch Island 3",
     "0X+X+X+X+X+X+X+X",
     {"X": "X+YF++YF-FX--FXFX-YF+X",
@@ -314,7 +324,7 @@ koch_island_3 = LSystemFractal(
     lambda d: 0.6 * 7 ** d,
     4)
 
-koch_island_4 = LSystemFractal(
+koch_island_4 = register_fractal(
     "Koch Island 4",
     "0F+F+F+F",
     {"F": "F+F-F-FF+F+F-F"},
@@ -323,7 +333,7 @@ koch_island_4 = LSystemFractal(
     lambda d: 0.17 * 7 ** d,
     4)
 
-pentaplexity = LSystemFractal(
+pentaplexity = register_fractal(
     "Pentaplexity",
     "0F++F++F++F++F",
     {"F": "F++F++F|F-F++F"},
@@ -332,7 +342,7 @@ pentaplexity = LSystemFractal(
     lambda d: 3 ** d,
     4)
 
-bourke_rings = LSystemFractal(
+bourke_rings = register_fractal(
     "Bourke Rings",
     "0F+F+F+F",
     {"F": "FF+F+F+F+F+F-F"},
@@ -341,7 +351,7 @@ bourke_rings = LSystemFractal(
     lambda d: 2 * 3 ** d,
     5)
 
-bourke_2 = LSystemFractal(
+bourke_2 = register_fractal(
     "Bourke 2",
     "0F+F+F+F",
     {"F": "FF+F-F+F+FF"},
@@ -351,6 +361,5 @@ bourke_2 = LSystemFractal(
     4)
 
 if __name__ == "__main__":
-    from fractal_base import FRACTAL_REGISTRY
-    for ind, frac in enumerate(FRACTAL_REGISTRY):
+    for ind, frac in enumerate(fractal_registry):
         print("{:2}: {}".format(ind, frac))

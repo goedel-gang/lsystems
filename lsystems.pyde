@@ -27,17 +27,16 @@ from collections import deque
 from itertools import islice, izip
 from textwrap import dedent
 
-import fractals
-from fractal_base import FRACTAL_REGISTRY
+from fractals import fractal_registry
 from drawing import draw_fractal
 
-# The order in which to assign keys to fractals from FRACTAL_REGISTRY.
+# The order in which to assign keys to fractals from fractal_registry.
 FRACTAL_KEYS = "1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
 
-assert len(FRACTAL_KEYS) >= len(FRACTAL_REGISTRY)
+assert len(FRACTAL_KEYS) >= len(fractal_registry)
 
 FRACTAL_KEYMAP = dict((ord(key), ind) for ind, key in
-        islice(enumerate(FRACTAL_KEYS), len(FRACTAL_REGISTRY)))
+        islice(enumerate(FRACTAL_KEYS), len(fractal_registry)))
 
 def helptext():
     print dedent("""\
@@ -47,7 +46,7 @@ def helptext():
             Available fractals:""")
     print "\n".join(
         "{}: {}".format(key, i.name)
-        for key, i in izip(FRACTAL_KEYS, FRACTAL_REGISTRY))
+        for key, i in izip(FRACTAL_KEYS, fractal_registry))
 
 def setup():
     global render_to_buffer, render_fullscreen, cycle, cycling, depth_delta, \
@@ -75,7 +74,7 @@ def set_fractal_drawer(n):
            cur_fractal_n, has_screenshot
     has_screenshot = False
     cur_fractal_n = n
-    fractal = FRACTAL_REGISTRY[n]
+    fractal = fractal_registry[n]
     fractal_depth = max(fractal.iterations + depth_delta, 1)
     cycling = -1
     if render_to_buffer:
@@ -104,7 +103,7 @@ def advance():
         if not GUIDELINES and not has_screenshot and SCREENSHOT:
             scrot_name = "screenshots/{:02}_{}.png".format(cur_fractal_n,
                     "".join(c for c in
-                    FRACTAL_REGISTRY[cur_fractal_n]
+                    fractal_registry[cur_fractal_n]
                         .name.lower().replace(" ", "_")
                     if c == "_" or c.isalnum()))
             print("saving {}".format(scrot_name))
@@ -129,7 +128,7 @@ def draw():
         if cycling == 0:
             cycling = -1
             cur_fractal_n += 1
-            if cur_fractal_n < len(FRACTAL_REGISTRY):
+            if cur_fractal_n < len(fractal_registry):
                 set_fractal_drawer(cur_fractal_n)
             else:
                 if VIDEO:
