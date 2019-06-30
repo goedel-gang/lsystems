@@ -197,7 +197,7 @@ fibonacci_word = register_fractal(
      "G": "F"},
     lambda t, d: standard_rules(t, 90, additions=fibo_rules(t)),
     fibo_dim,
-    24)
+    23)
 
 crystal = register_fractal(
     "Crystal",
