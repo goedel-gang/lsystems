@@ -12,15 +12,14 @@ class ProcessingTurtle(object):
     This is a slightly unconventional kind of turtle - see the documentation for
     LSystemFractal.
     """
-    def __init__(self, graphics, x=0, y=0, heading=0, pendown=True,
-            input_scale=1.0, output_scale=1.0):
+    def __init__(self, graphics):
         self.graphics = graphics
-        self.x = x
-        self.y = y
-        self.heading = heading
-        self._pendown = pendown
-        self.input_scale = input_scale
-        self.output_scale = output_scale
+        self.x = 0
+        self.y = 0
+        self.heading = 0
+        self._pendown = True
+        self.input_scale = 1.0
+        self.output_scale = 1.0
         self.times_moved = 0
         self.state_stack = []
 
@@ -80,16 +79,5 @@ class ProcessingTurtle(object):
     def restore_state(self):
         self.x, self.y, self.heading, self._pendown = self.state_stack.pop()
 
-def draw_fractal(graphics, fractal, w, depth):
-    """
-    Draw an LSystemFractal, in a Processing sketch.
-    """
-    t = ProcessingTurtle(graphics)
-    expected_steps = fractal.project_steps(depth)
-    draw_rules = fractal.draw_rules(t, depth)
-    t.input_rescale(fractal.size_func(depth))
-    t.output_rescale(w)
-    for symbol in fractal.generate(depth):
-        graphics.stroke(255.0 * t.times_moved / expected_steps, 255, 255)
-        if draw_rules[symbol]():
-            yield
+    def sethue(self, h):
+        self.graphics.stroke(h, 255, 255)

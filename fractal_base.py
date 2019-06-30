@@ -28,7 +28,7 @@ class DummyTurtle(object):
     """
     def __init__(self):
         for i in """forward turn setheading_degrees save_state restore_state
-                turn_degrees jump fjump""".split():
+                turn_degrees jump fjump sethue""".split():
             self.__dict__[i] = lambda *args: None
 
 class LSystemFractal(LSystemFractalTuple):
@@ -144,6 +144,20 @@ class LSystemFractal(LSystemFractalTuple):
             for sym in self.generate(depth - 1):
                 for gen_sym in self.rules.get(sym, sym):
                     yield gen_sym
+
+    def draw(self, turtle, depth, w):
+        """
+        Return a generator that draws the fractal, that yields for every line
+        drawn.
+        """
+        expected_steps = self.project_steps(depth)
+        draw_rules = self.draw_rules(turtle, depth)
+        turtle.input_rescale(self.size_func(depth))
+        turtle.output_rescale(w)
+        for symbol in self.generate(depth):
+            turtle.sethue(255.0 * turtle.times_moved / expected_steps)
+            if draw_rules[symbol]():
+                yield
 
     def __str__(self):
         return dedent("""\

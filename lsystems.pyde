@@ -28,7 +28,7 @@ from itertools import islice, izip
 from textwrap import dedent
 
 from fractals import fractal_registry
-from drawing import draw_fractal
+from drawing import ProcessingTurtle
 
 # The order in which to assign keys to fractals from fractal_registry.
 FRACTAL_KEYS = "1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
@@ -86,9 +86,9 @@ def set_fractal_drawer(n):
     else:
         background(0)
         fractal_graphics = g
-    cur_fractal_drawer = draw_fractal(fractal_graphics, fractal,
-            min(fractal_graphics.width, fractal_graphics.height),
-            fractal_depth)
+    cur_fractal_drawer = fractal.draw(ProcessingTurtle(fractal_graphics),
+            fractal_depth,
+            min(fractal_graphics.width, fractal_graphics.height))
     projected_steps = fractal.project_steps(fractal_depth)
     print "set to {}".format(fractal.name)
 
