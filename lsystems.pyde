@@ -93,14 +93,15 @@ def set_fractal_drawer(n):
     print "set to {}".format(fractal.name)
 
 def advance():
-    global cycling, has_screenshot
+    global cycling, has_screenshot, depth_delta
     if cycling < 1 and render_to_buffer:
         fractal_graphics.beginDraw()
     # consume `iterations_per_frame` number of items from cur_fractal_drawer
     d = deque(islice(cur_fractal_drawer,
                      max(1, projected_steps // frames_per_draw)), maxlen=1)
     if not d:
-        if not GUIDELINES and not has_screenshot and SCREENSHOT:
+        if (not GUIDELINES and not has_screenshot and SCREENSHOT
+                and depth_delta == 0):
             scrot_name = "screenshots/{:02}_{}.png".format(cur_fractal_n,
                     "".join(c for c in
                     fractal_registry[cur_fractal_n]
