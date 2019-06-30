@@ -199,9 +199,6 @@ fibonacci_word = register_fractal(
     fibo_dim,
     24)
 
-# TODO: some proper names here
-#       Also, basically all of these are total guesswork as to the dimensions.
-
 crystal = register_fractal(
     "Crystal",
     "F+F+F+F",
@@ -254,6 +251,24 @@ square_sierpinski = register_fractal(
         {"_": lambda: nodraw(t.fjump(-0.5))}),
     lambda d: 4 * (2 ** d) - 3,
     6)
+
+# https://jsxgraph.uni-bayreuth.de/wiki/index.php/Penrose_tiling
+penrose = register_fractal(
+    "Penrose Tiling",
+    "0[Y]++[Y]++[Y]++[Y]++[Y]",
+    {"X" : "VF++WF----YF[-VF----XF]++",
+     "Y" : "+VF--WF[---XF--YF]+",
+     "V" : "-XF++YF[+++VF++WF]-",
+     "W" : "--VF++++XF[+WF++++YF]--YF",
+     "F" : "",
+     "+" : "+",
+     "-" : "-",
+     "[" : "[",
+     "]" : "]"},
+    lambda t, d: standard_rules(t, 36, (0.5, 0.5), additions=
+        {"V": nodraw, "W": nodraw}),
+    lambda d: 2.3 * (0.5 * (1 + sqrt(5))) ** d,
+    7)
 
 hexagonal_gosper = register_fractal(
     "Hexagonal Gosper",
