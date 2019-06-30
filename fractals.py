@@ -11,7 +11,9 @@ Instances of L-system fractals. See
 #       Most critically, get all of the guesswork sorted out
 
 from math import sqrt
+from itertools import chain
 
+from matrix import Matrix
 from fractal_base import LSystemFractal
 
 fractal_registry = []
@@ -151,6 +153,51 @@ binary_tree = register_fractal(
     #       weird
     lambda d: 1 + 2 ** (d - 1) * 4 / 3 * (1 + 0.25 * sqrt(2)),
     10)
+
+# TODO: perhaps better done through the OOP interface
+def fibo_rules(t):
+    """
+    A function that uses a closure over a boolean flag to keep track of the
+    parity of the index of each symbol, which is needed for the construction of
+    the Fibonacci word fractal.
+
+    Mutable object workaround on account of Python 2 not having `nonlocal`s.
+    """
+    ind_is_odd = [False]
+    def F():
+        ind_is_odd[0] = not ind_is_odd[0]
+        if ind_is_odd[0]:
+            return draw(t.forward(1), t.turn_degrees(+90))
+        else:
+            return draw(t.forward(1), t.turn_degrees(-90))
+    def G():
+        ind_is_odd[0] = not ind_is_odd[0]
+        return draw(t.forward(1))
+    return {"F": F, "G": G}
+
+def fibo_dim(n):
+    """
+    Calculate dimensions of Fibonacci word fractals. See
+    fibonacci/investigate.py.
+    """
+    if n % 3 == 0:
+        return (Matrix([ [0, 1], [1, 2] ]) ** (n // 3)
+                * Matrix([[1], [3]])).array[0][0]
+    elif n % 3 == 2:
+        return (Matrix([ [0, 1], [1, 2] ]) ** (n // 3)
+                * Matrix([[2], [5]])).array[0][0]
+    else:
+        return (Matrix([ [0, 1], [1, 2] ]) ** (n // 3)
+                * Matrix([[2], [5]])).array[0][0] - 1
+
+fibonacci_word = register_fractal(
+    "Fibonacci Word Fractal",
+    "0F",
+    {"F": "FG",
+     "G": "F"},
+    lambda t, d: standard_rules(t, 90, additions=fibo_rules(t)),
+    fibo_dim,
+    24)
 
 # TODO: some proper names here
 #       Also, basically all of these are total guesswork as to the dimensions.
@@ -361,5 +408,7 @@ bourke_2 = register_fractal(
     4)
 
 if __name__ == "__main__":
+    for i in range(10):
+        print("{:2}: {}".format(i, fibo_dim(i)))
     for ind, frac in enumerate(fractal_registry):
         print("{:2}: {}".format(ind, frac))

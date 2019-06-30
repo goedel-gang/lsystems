@@ -111,6 +111,7 @@ def advance():
             has_screenshot = True
         if cycle:
             print("preparing to cycle")
+            depth_delta = 0
             cycling = max(CYCLE_PAUSE, 1)
         else:
             cycling = 0
@@ -155,6 +156,7 @@ def keyPressed():
     global frames_per_draw, depth_delta, cycle
     if not VIDEO:
         if keyCode in FRACTAL_KEYMAP:
+            depth_delta = 0
             set_fractal_drawer(FRACTAL_KEYMAP[keyCode])
         elif keyCode == LEFT:
             frames_per_draw = max(1, frames_per_draw * 9 // 10)
@@ -167,7 +169,7 @@ def keyPressed():
             set_fractal_drawer(cur_fractal_n)
             print "depth delta: {}".format(depth_delta)
         elif keyCode == UP:
-            depth_delta = 0
+            depth_delta += 1
             set_fractal_drawer(cur_fractal_n)
             print "depth delta: {}".format(depth_delta)
         elif key == "?":
