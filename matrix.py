@@ -64,6 +64,7 @@ class Matrix(object):
         by Squaring". This is a divide and conquer strategy capitalising on the
         fact that M ^ (2n + 1) == M ^ n M ^ n M, and
                   M ^ 2n       == M ^ n M ^ n.
+        Doesn't support negative or non-integral exponents.
         """
         if n == 0:
             return self.identity(len(self.array))
