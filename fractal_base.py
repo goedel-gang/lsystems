@@ -56,8 +56,8 @@ class LSystemFractal(LSystemFractalTuple):
                 nullary functions. This is a function of a turtle-like object,
                 the depth of the fractal, and the width of the square it should
                 be drawn in, so the fractal can make adjustments for itself and
-                access drawing methods. If a rule returns a truthy value when
-                called, that is taken to mean that it has constituted a step.
+                access drawing methods. The return value of each rule should be
+                the number of steps taken by that rule.
                 It would be appreciated if the number of rules and drawing
                 category is invariant for turtle and depth inputs, for static
                 analysis purposes.
@@ -115,8 +115,7 @@ class LSystemFractal(LSystemFractalTuple):
         initial_counter = Counter(self.axiom)
         self.initial_vector = Matrix([[initial_counter[symbol]] for symbol in
                 self.symbols])
-        self.stepping_symbols = set(symbol for symbol in self.symbols if
-                draw_rules[symbol]())
+        self.symbol_steps = [draw_rules[symbol]() for symbol in self.symbols]
 
     def project_steps(self, iterations):
         """
@@ -126,10 +125,9 @@ class LSystemFractal(LSystemFractalTuple):
         calculate this for the fern function, so I decided to automated the
         whole thing, and take out a point of failure.
         """
-        return sum(i[0] for i, sym in
-                zip(self.transition_matrix ** iterations * self.initial_vector,
-                    self.symbols)
-                if sym in self.stepping_symbols)
+        return (Matrix([self.symbol_steps]) *
+                self.transition_matrix ** iterations * self.initial_vector
+                ).array[0][0]
 
     def generate(self, depth):
         """
@@ -154,9 +152,11 @@ class LSystemFractal(LSystemFractalTuple):
         draw_rules = self.draw_rules(turtle, depth)
         turtle.input_rescale(self.size_func(depth))
         turtle.output_rescale(w)
+        times_moved = 0
         for symbol in self.generate(depth):
-            turtle.sethue(255.0 * turtle.times_moved / expected_steps)
-            if draw_rules[symbol]():
+            turtle.sethue(255.0 * times_moved / expected_steps)
+            for _ in xrange(draw_rules[symbol]()):
+                times_moved += 1
                 yield
 
     def __str__(self):

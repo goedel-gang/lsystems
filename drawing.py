@@ -20,7 +20,6 @@ class ProcessingTurtle(object):
         self._pendown = True
         self.input_scale = 1.0
         self.output_scale = 1.0
-        self.times_moved = 0
         self.state_stack = []
 
     def output_rescale(self, scale):
@@ -44,7 +43,6 @@ class ProcessingTurtle(object):
                                self.y * self.output_scale,
                                nx * self.output_scale,
                                ny * self.output_scale)
-            self.times_moved += 1
         self.jump(nx, ny)
 
     def jump(self, nx, ny):

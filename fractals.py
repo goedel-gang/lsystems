@@ -28,18 +28,18 @@ def register_fractal(*args, **kwargs):
 
 def draw(*args):
     """
-    Dummy function that returns True, for nicer semantics in defining L systems.
+    Dummy function that returns 1, for nicer semantics in defining L systems.
     You pass each thing you want to be executed as an argument. Generally I've
     favoured lambda functions over functools.partial because I think they're
     cooler.
     """
-    return True
+    return 1
 
 def nodraw(*args):
     """
     Similar to draw(). With no arguments, can act as a no-op
     """
-    return False
+    return 0
 
 def standard_rules(t, angle=90, initial_pos=(0, 0), initial_heading=0,
         additions={}):
