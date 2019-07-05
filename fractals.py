@@ -387,7 +387,7 @@ koch_island_3 = register_fractal(
     4)
 
 koch_island_4 = register_fractal(
-    "Koch Island 4",
+    "Minkowski Island/Sausage",
     "0F+F+F+F",
     {"F": "F+F-F-FF+F+F-F"},
     lambda t, d: standard_rules(t, 90, (0.07, 0.63), -60),

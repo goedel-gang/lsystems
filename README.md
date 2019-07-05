@@ -61,7 +61,7 @@ Here are some screenshots:
 ![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/26_koch_island_1.png)
 ![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/27_koch_island_2.png)
 ![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/28_koch_island_3.png)
-![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/29_koch_island_4.png)
+![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/29_minkowski_islandsausage.png)
 ![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/30_pentaplexity.png)
 ![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/31_bourke_rings.png)
 ![screenshot](https://github.com/goedel-gang/lsystems/blob/master/screenshots/32_bourke_2.png)
