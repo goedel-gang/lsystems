@@ -112,7 +112,6 @@ def advance():
             has_screenshot = True
         if cycle:
             print("preparing to cycle")
-            depth_delta = 0
             cycling = max(CYCLE_PAUSE, 1)
         else:
             cycling = 0
@@ -131,6 +130,7 @@ def draw():
             cycling = -1
             cur_fractal_n += 1
             if cur_fractal_n < len(fractal_registry):
+                depth_delta = 0
                 set_fractal_drawer(cur_fractal_n)
             else:
                 if VIDEO:
