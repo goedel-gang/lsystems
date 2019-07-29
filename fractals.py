@@ -252,6 +252,16 @@ square_sierpinski = register_fractal(
     lambda d: 4 * (2 ** d) - 3,
     6)
 
+cantor_set = register_fractal(
+    "Cantor Set",
+    "0F",
+    {"F": "[-ff+FfF]GGG",
+     "f": "fff",
+     "G": "GGG"},
+    lambda t, d: standard_rules(t, 90, (0, 1)),
+    lambda d: 3 ** d,
+    6)
+
 # https://jsxgraph.uni-bayreuth.de/wiki/index.php/Penrose_tiling
 penrose = register_fractal(
     "Penrose Tiling",
