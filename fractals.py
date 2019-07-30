@@ -242,6 +242,15 @@ sierpinski_star = register_fractal(
     lambda d: 3 ** d * 2,
     5)
 
+sierpinski_carpet = register_fractal(
+    "Sierpinski's Carpet",
+    "F+F+F+F",
+    {"F": "F[+f]F[+f[|f]+F+f]F",
+     "f": "f[+f]f[+f[|f]+F+f]f"},
+    lambda t, d: standard_rules(t),
+    lambda d: 3 ** d,
+    6)
+
 krishna_anklets = register_fractal(
     "Krishna Anklets",
     "0-X--X",
