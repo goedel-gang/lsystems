@@ -54,7 +54,10 @@ def standard_rules(t, angle=90, initial_pos=(0, 0), initial_heading=0,
     """
     rules = {"F": lambda: draw(t.forward(1)),
              "G": lambda: draw(t.forward(1)),
+             "H": lambda: draw(t.forward(1)),
              "f": lambda: nodraw(t.fjump(1)),
+             "g": lambda: nodraw(t.fjump(1)),
+             "h": lambda: nodraw(t.fjump(1)),
              "-": lambda: nodraw(t.turn_degrees(-angle)),
              "+": lambda: nodraw(t.turn_degrees(angle)),
              "|": lambda: nodraw(t.turn_degrees(180)),
@@ -62,6 +65,7 @@ def standard_rules(t, angle=90, initial_pos=(0, 0), initial_heading=0,
              "]": lambda: nodraw(t.restore_state()),
              "X": nodraw,
              "Y": nodraw,
+             "Z": nodraw,
              "0": lambda: nodraw(t.jump(*initial_pos),
                                  t.setheading_degrees(initial_heading))}
     rules.update(additions)
@@ -216,6 +220,28 @@ peano = register_fractal(
     lambda d: 3 ** d - 1,
     5)
 
+cantor_set = register_fractal(
+    "Cantor Set",
+    "0F",
+    {"F": "[-ff+FfF]GGG",
+     "f": "fff",
+     "G": "GGG"},
+    lambda t, d: standard_rules(t, 90, (0, 1)),
+    lambda d: 3 ** d,
+    6)
+
+# TODO: is there any way to make this be continuously drawn?
+sierpinski_star = register_fractal(
+    "Sierpinski Star",
+    "0F-F-F-F-F-F",
+    {"F": "F[-F[-F-F]++F]GF",
+     "G": "GF[-F-f-f[-f-F]|G]G",
+     "g": "gf[-F-f-f[-f-F]|G]g",
+     "f": "f[-F[-F-F]++F]gf"},
+    lambda t, d: standard_rules(t, 60, (0.25, 0.5 + 0.25 * sqrt(3))),
+    lambda d: 3 ** d * 2,
+    5)
+
 krishna_anklets = register_fractal(
     "Krishna Anklets",
     "0-X--X",
@@ -250,16 +276,6 @@ square_sierpinski = register_fractal(
     lambda t, d: standard_rules(t, 90, (0.5, 0), additions=
         {"_": lambda: nodraw(t.fjump(-0.5))}),
     lambda d: 4 * (2 ** d) - 3,
-    6)
-
-cantor_set = register_fractal(
-    "Cantor Set",
-    "0F",
-    {"F": "[-ff+FfF]GGG",
-     "f": "fff",
-     "G": "GGG"},
-    lambda t, d: standard_rules(t, 90, (0, 1)),
-    lambda d: 3 ** d,
     6)
 
 # https://jsxgraph.uni-bayreuth.de/wiki/index.php/Penrose_tiling
