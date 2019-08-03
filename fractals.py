@@ -223,7 +223,7 @@ peano = register_fractal(
 cantor_set = register_fractal(
     "Cantor Set",
     "0F",
-    {"F": "[-ff+FfF]GGG",
+    {"F": "[GGG][-ff+FfF]fff",
      "f": "fff",
      "G": "GGG"},
     lambda t, d: standard_rules(t, 90, (0, 1)),
