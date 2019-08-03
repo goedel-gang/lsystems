@@ -168,11 +168,9 @@ class LSystemFractal(LSystemFractalTuple):
                 {}
                 Symbol table:
                 {}
-                Stepping symbol table:
-                {}
                 Initial state vector:
                 {}
                 Transition matrix:
                 {}""").format(self.name, self.axiom, pformat(self.rules),
-                    pformat(self.symbols), pformat(self.stepping_symbols),
-                    self.initial_vector, self.transition_matrix)
+                    pformat(self.symbols), self.initial_vector,
+                    self.transition_matrix)
